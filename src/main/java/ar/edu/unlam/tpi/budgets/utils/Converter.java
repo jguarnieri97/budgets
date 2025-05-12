@@ -60,6 +60,9 @@ public class Converter {
     }
 
     public static BudgetResponse toBudgetResponse(BudgetRequest entity) {
+        if (entity == null) {
+            return null;
+        }
         return BudgetResponse.builder()
                 .id(entity.getId())
                 .applicantId(entity.getApplicantId())

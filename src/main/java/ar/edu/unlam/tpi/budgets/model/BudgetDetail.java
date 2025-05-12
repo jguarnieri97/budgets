@@ -8,8 +8,10 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class BudgetDetail {
+
     private boolean isUrgent;
     private LocalDateTime estimatedDate;
     private String workResume;
     private String workDetail;
+
 }

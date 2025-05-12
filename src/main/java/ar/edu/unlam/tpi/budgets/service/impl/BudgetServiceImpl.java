@@ -41,8 +41,6 @@ public class BudgetServiceImpl implements BudgetService {
     @Override
     public BudgetResponse getBudgetDetailById(String budgetId) {
         BudgetRequest entity = repository.findById(budgetId).orElse(null);
-        if (entity == null) return null;
-
         return Converter.toBudgetResponse(entity);
     }
 
