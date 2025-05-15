@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BudgetDataResponse {
+public class BudgetDataResponseDto {
 
     private Long supplierId;
     private Double price;

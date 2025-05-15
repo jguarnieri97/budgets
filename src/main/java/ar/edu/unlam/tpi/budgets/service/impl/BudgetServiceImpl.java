@@ -1,9 +1,9 @@
 package ar.edu.unlam.tpi.budgets.service.impl;
 
-import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequest;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponse;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestListResponse;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponse;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestListResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
@@ -24,22 +24,22 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public BudgetCreationResponse create(BudgetCreationRequest request) {
+    public BudgetCreationResponseDto create(BudgetCreationRequestDto request) {
         BudgetRequest budgetRequest = Converter.toBudgetRequest(request);
         BudgetRequest saved = repository.save(budgetRequest);
-        return BudgetCreationResponse.builder()
+        return BudgetCreationResponseDto.builder()
                 .id(saved.getId())
                 .build();
     }
 
     @Override
-    public BudgetRequestListResponse getBudgetsByApplicantId(Long applicantId) {
+    public BudgetRequestListResponseDto getBudgetsByApplicantId(Long applicantId) {
         List<BudgetRequest> budgetEntities = repository.findByApplicantId(applicantId);
         return Converter.toBudgetListResponse(budgetEntities);
     }
 
     @Override
-    public BudgetResponse getBudgetDetailById(String budgetId) {
+    public BudgetResponseDto getBudgetDetailById(String budgetId) {
         BudgetRequest entity = repository.findById(budgetId).orElse(null);
         return Converter.toBudgetResponse(entity);
     }

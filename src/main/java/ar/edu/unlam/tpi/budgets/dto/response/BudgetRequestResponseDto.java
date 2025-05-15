@@ -5,8 +5,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BudgetCreationResponse {
+public class BudgetRequestResponseDto {
 
     private String id;
+    private Long applicantId;
+    private String date;
 
 }

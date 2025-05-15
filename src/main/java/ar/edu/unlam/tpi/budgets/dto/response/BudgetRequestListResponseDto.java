@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 @Builder
-public class BudgetRequestListResponse {
+public class BudgetRequestListResponseDto {
 
-    private List<BudgetRequestResponse> budgets;
+    private List<BudgetRequestResponseDto> budgets;
 
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BudgetDetailResponse {
+public class BudgetDetailResponseDto {
 
     private Boolean isUrgent;
     private String estimatedDate;

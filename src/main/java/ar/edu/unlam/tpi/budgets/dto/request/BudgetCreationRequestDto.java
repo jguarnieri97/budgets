@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class BudgetCreationRequest {
+public class BudgetCreationRequestDto {
 
     private Long applicantId;
     private boolean isUrgent;

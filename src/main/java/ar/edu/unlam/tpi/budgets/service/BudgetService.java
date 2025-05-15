@@ -1,14 +1,14 @@
 package ar.edu.unlam.tpi.budgets.service;
 
-import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequest;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponse;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestListResponse;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponse;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestListResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 
 public interface BudgetService {
 
-    BudgetCreationResponse create(BudgetCreationRequest request);
-    BudgetRequestListResponse getBudgetsByApplicantId(Long aplicantId);
-    BudgetResponse getBudgetDetailById(String budgetId);
+    BudgetCreationResponseDto create(BudgetCreationRequestDto request);
+    BudgetRequestListResponseDto getBudgetsByApplicantId(Long aplicantId);
+    BudgetResponseDto getBudgetDetailById(String budgetId);
 
 }

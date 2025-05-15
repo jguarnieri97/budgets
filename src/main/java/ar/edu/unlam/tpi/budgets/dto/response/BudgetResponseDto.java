@@ -7,13 +7,13 @@ import java.util.List;
 
 @Data
 @Builder
-public class BudgetResponse {
+public class BudgetResponseDto {
 
     private String id;
     private Long applicantId;
     private String createdAt;
     private List<String> files;
-    private BudgetDetailResponse detail;
-    private List<BudgetDataResponse> budgets;
+    private BudgetDetailResponseDto detail;
+    private List<BudgetDataResponseDto> budgets;
 
 }
