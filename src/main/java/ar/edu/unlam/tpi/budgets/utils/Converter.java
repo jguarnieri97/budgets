@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,6 +32,7 @@ public class Converter {
 
         return BudgetRequest.builder()
                 .applicantId(request.getApplicantId())
+                .budgetNumber(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE) // Genera un número único basado en UUID
                 .createdAt(LocalDateTime.now())
                 .state(BudgetState.PENDING)
                 .files(request.getFiles())
