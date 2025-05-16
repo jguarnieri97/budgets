@@ -52,13 +52,10 @@ public class Converter {
                 .build();
     }
 
-    public static BudgetRequestListResponseDto toBudgetListResponse(List<BudgetRequest> budgetRequests) {
-        List<BudgetRequestResponseDto> responses = budgetRequests.stream()
+    public static List<BudgetRequestResponseDto> toBudgetListResponse(List<BudgetRequest> budgetRequests) {
+        return budgetRequests.stream()
                 .map(Converter::toBudgetRequestResponse)
                 .collect(Collectors.toList());
-        return BudgetRequestListResponseDto.builder()
-                .budgets(responses)
-                .build();
     }
 
     public static BudgetResponseDto toBudgetResponse(BudgetRequest entity) {

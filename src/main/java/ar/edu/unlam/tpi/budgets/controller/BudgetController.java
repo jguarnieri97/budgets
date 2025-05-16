@@ -1,16 +1,15 @@
 package ar.edu.unlam.tpi.budgets.controller;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestListResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.GenericResponse;
+import ar.edu.unlam.tpi.budgets.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("budgets/v1/budget")
 @Validated
@@ -19,7 +18,7 @@ public interface BudgetController {
     @GetMapping("/user/{applicantId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get applicant's budget requests")
-    GenericResponse<BudgetRequestListResponseDto> getBudgetsByApplicantId(
+    GenericResponse<List<BudgetRequestResponseDto>> getBudgetsByApplicantId(
             @PathVariable("applicantId") @NotNull Long applicantId);
 
     @GetMapping("/{budgetId}")
