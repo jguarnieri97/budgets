@@ -1,7 +1,7 @@
 package ar.edu.unlam.tpi.budgets.persistence.repository;
 
-import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
 
 import java.util.List;
 
