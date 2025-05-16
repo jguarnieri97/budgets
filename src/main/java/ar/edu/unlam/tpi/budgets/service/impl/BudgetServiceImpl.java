@@ -2,12 +2,10 @@ package ar.edu.unlam.tpi.budgets.service.impl;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestListResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
-import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
-import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
+import ar.edu.unlam.tpi.budgets.persistence.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.Converter;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +35,12 @@ public class BudgetServiceImpl implements BudgetService {
     @Override
     public List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long applicantId) {
         List<BudgetRequest> budgetEntities = budgetDAO.findByApplicantId(applicantId);
+        return Converter.toBudgetListResponse(budgetEntities);
+    }
+
+    @Override
+    public List<BudgetRequestResponseDto> getBudgetsBySupplierId(Long supplierId) {
+        List<BudgetRequest> budgetEntities = budgetDAO.findBySupplierId(supplierId);
         return Converter.toBudgetListResponse(budgetEntities);
     }
 

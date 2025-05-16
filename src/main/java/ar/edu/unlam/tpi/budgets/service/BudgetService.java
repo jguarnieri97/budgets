@@ -11,7 +11,8 @@ import java.util.List;
 public interface BudgetService {
 
     BudgetCreationResponseDto create(BudgetCreationRequestDto request);
-    List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long aplicantId);
+    List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long applicantId);
+    List<BudgetRequestResponseDto> getBudgetsBySupplierId(Long supplierId);
     BudgetResponseDto getBudgetDetailById(String budgetId);
 
 }

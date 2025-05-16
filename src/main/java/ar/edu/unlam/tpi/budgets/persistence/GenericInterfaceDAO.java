@@ -1,4 +1,4 @@
-package ar.edu.unlam.tpi.budgets.persistence.dao;
+package ar.edu.unlam.tpi.budgets.persistence;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package ar.edu.unlam.tpi.budgets.persistence.impl;
 import ar.edu.unlam.tpi.budgets.exceptions.InternalException;
 import ar.edu.unlam.tpi.budgets.exceptions.NotFoundException;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
-import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
+import ar.edu.unlam.tpi.budgets.persistence.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,16 +60,20 @@ public class BudgetDAOImpl implements BudgetDAO {
     @Override
     public List<BudgetRequest> findByApplicantId(Long applicantId) {
         try {
-            List<BudgetRequest> results = repository.findByApplicantId(applicantId);
-            if (results.isEmpty()) {
-                throw new NotFoundException("No se encontraron presupuestos para el applicantId: " + applicantId);
-            }
-            return results;
-        } catch (NotFoundException e) {
-            throw new NotFoundException(e.getDetail());
-        } catch (Exception e) {
+            return repository.findByApplicantId(applicantId);
+        }  catch (Exception e) {
             throw new InternalException(e.getMessage());
         }
     }
+
+    @Override
+    public List<BudgetRequest> findBySupplierId(Long supplierId) {
+        try {
+            return repository.findBySupplierId(supplierId);
+        }  catch (Exception e) {
+            throw new InternalException(e.getMessage());
+        }
+    }
+
 
 }

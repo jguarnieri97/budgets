@@ -1,4 +1,4 @@
-package ar.edu.unlam.tpi.budgets.persistence.dao;
+package ar.edu.unlam.tpi.budgets.persistence;
 
 import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
 
@@ -7,5 +7,6 @@ import java.util.List;
 public interface BudgetDAO extends GenericInterfaceDAO<BudgetRequest, String>{
 
     List<BudgetRequest> findByApplicantId(Long applicantId);
+    List<BudgetRequest> findBySupplierId(Long supplierId);
 
 }

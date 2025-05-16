@@ -16,14 +16,6 @@ public class BudgetControllerImpl implements BudgetController {
 
     private final BudgetService budgetService;
 
-    @Override
-    public GenericResponse<List<BudgetRequestResponseDto>> getBudgetsByApplicantId(Long applicantId) {
-        List<BudgetRequestResponseDto> budgetList = budgetService.getBudgetsByApplicantId(applicantId);
-        return new GenericResponse<>(
-                Constants.STATUS_OK,
-                Constants.SUCCESS_MESSAGE,
-                budgetList);
-    }
 
     @Override
     public GenericResponse<BudgetResponseDto> getBudgetDetailById(String budgetId) {

@@ -15,11 +15,6 @@ import java.util.List;
 @Validated
 public interface BudgetController {
 
-    @GetMapping("/user/{applicantId}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get applicant's budget requests")
-    GenericResponse<List<BudgetRequestResponseDto>> getBudgetsByApplicantId(
-            @PathVariable("applicantId") @NotNull Long applicantId);
 
     @GetMapping("/{budgetId}")
     @ResponseStatus(HttpStatus.OK)
