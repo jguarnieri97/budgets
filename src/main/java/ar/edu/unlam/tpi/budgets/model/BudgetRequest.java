@@ -16,7 +16,7 @@ public class BudgetRequest {
 
     @Id
     private String id;
-    private Long budgetNumber;
+    private String budgetNumber;
     private Long applicantId;
     private LocalDateTime createdAt;
     private BudgetState state;
