@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,13 +32,17 @@ public class Converter {
 
         return BudgetRequest.builder()
                 .applicantId(request.getApplicantId())
-                .budgetNumber(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE) // Genera un número único basado en UUID
+                .budgetNumber(formatBuildNumber(new Random().nextInt(1000000), 7)) // Genera un número único basado en UUID
                 .createdAt(LocalDateTime.now())
                 .state(BudgetState.PENDING)
                 .files(request.getFiles())
                 .budgetDetail(detail)
                 .budgets(budgets)
                 .build();
+    }
+
+    public static String formatBuildNumber(int buildNumber, int minDigits) {
+        return String.format("%0" + minDigits + "d", buildNumber);
     }
 
     public static BudgetRequestResponseDto toBudgetRequestResponse(BudgetRequest budget) {
