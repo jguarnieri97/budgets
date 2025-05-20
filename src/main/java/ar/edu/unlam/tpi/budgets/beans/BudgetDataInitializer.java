@@ -27,6 +27,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .id("6826712de38b3e1cafe67291")
                 .budgetNumber("00001")
                 .applicantId(1L)
+                .applicantName("Nexwork")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T22:56:45"))
                 .state(BudgetState.PENDING)
                 .files(Arrays.asList("file1.pdf", "file2.docx"))
@@ -39,6 +40,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .budgets(Arrays.asList(
                         Budget.builder()
                                 .supplierId(1L)
+                                .supplierName("ElectraSol")
                                 .price(130000.0F)
                                 .daysCount(1)
                                 .workerCount(1)
@@ -46,6 +48,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .build(),
                         Budget.builder()
                                 .supplierId(2L)
+                                .supplierName("Voltix")
                                 .price(110000.0F)
                                 .daysCount(2)
                                 .workerCount(1)
@@ -53,6 +56,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .build(),
                         Budget.builder()
                                 .supplierId(3L)
+                                .supplierName("Lumenek")
                                 .price(120000.0F)
                                 .daysCount(3)
                                 .workerCount(1)
@@ -65,6 +69,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .id("6826712de38b3e1cafe67292")
                 .budgetNumber("00002")
                 .applicantId(1L)
+                .applicantName("Nexwork")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T23:00:05"))
                 .state(BudgetState.PENDING)
                 .files(Arrays.asList("file3.pdf", "file4.docx"))
@@ -77,6 +82,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .budgets(Arrays.asList(
                         Budget.builder()
                                 .supplierId(1L)
+                                .supplierName("ElectraSol")
                                 .price(120000.0F)
                                 .daysCount(1)
                                 .workerCount(1)
@@ -84,6 +90,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .build(),
                         Budget.builder()
                                 .supplierId(3L)
+                                .supplierName("Lumenek")
                                 .price(130000.0F)
                                 .daysCount(1)
                                 .workerCount(1)
@@ -96,6 +103,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .id("6826712de38b3e1cafe67293")
                 .budgetNumber("00003")
                 .applicantId(1L)
+                .applicantName("Nexwork")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T23:03:25"))
                 .state(BudgetState.PENDING)
                 .files(Arrays.asList("file5.pdf", "file6.docx"))
@@ -108,6 +116,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .budgets(Arrays.asList(
                         Budget.builder()
                                 .supplierId(1L)
+                                .supplierName("ElectraSol")
                                 .price(150000.0F)
                                 .daysCount(1)
                                 .workerCount(1)
@@ -115,6 +124,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .build(),
                         Budget.builder()
                                 .supplierId(3L)
+                                .supplierName("Lumenek")
                                 .price(130000.0F)
                                 .daysCount(1)
                                 .workerCount(1)

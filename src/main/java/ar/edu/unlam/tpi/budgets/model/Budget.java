@@ -8,6 +8,7 @@ import lombok.Data;
 public class Budget {
 
     private Long supplierId;
+    private String supplierName;
     private Float price;
     private Integer daysCount;
     private Integer workerCount;

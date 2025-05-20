@@ -8,6 +8,7 @@ import lombok.Data;
 public class BudgetDataResponseDto {
 
     private Long supplierId;
+    private String supplierName;
     private Double price;
     private Integer daysCount;
     private Integer workerCount;
