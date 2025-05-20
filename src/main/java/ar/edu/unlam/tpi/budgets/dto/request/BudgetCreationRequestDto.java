@@ -10,11 +10,12 @@ import java.util.List;
 public class BudgetCreationRequestDto {
 
     private Long applicantId;
+    private String applicantName;
     private boolean isUrgent;
     private String estimatedDate;
     private String workResume;
     private String workDetail;
     private List<String> files;
-    private List<Integer> suppliers;
+    private List<SupplierDataRequest> suppliers;
 
 }

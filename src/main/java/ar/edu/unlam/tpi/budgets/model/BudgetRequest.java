@@ -18,6 +18,7 @@ public class BudgetRequest {
     private String id;
     private String budgetNumber;
     private Long applicantId;
+    private String applicantName;
     private LocalDateTime createdAt;
     private BudgetState state;
     private List<String> files;

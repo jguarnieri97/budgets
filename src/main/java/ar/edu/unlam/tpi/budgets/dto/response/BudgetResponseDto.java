@@ -11,6 +11,7 @@ public class BudgetResponseDto {
 
     private String id;
     private Long applicantId;
+    private String applicantName;
     private String createdAt;
     private List<String> files;
     private BudgetDetailResponseDto detail;

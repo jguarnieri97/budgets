@@ -25,13 +25,15 @@ public class Converter {
                 .build();
 
         List<Budget> budgets = request.getSuppliers().stream()
-                .map(supplierId -> Budget.builder()
-                        .supplierId((long) supplierId)
+                .map(data -> Budget.builder()
+                        .supplierId(data.getSupplierId())
+                        .supplierName(data.getSupplierName())
                         .build())
                 .collect(Collectors.toList());
 
         return BudgetRequest.builder()
                 .applicantId(request.getApplicantId())
+                .applicantName(request.getApplicantName())
                 .budgetNumber(formatBuildNumber(new Random().nextInt(1000000), 7)) // Genera un número único basado en UUID
                 .createdAt(LocalDateTime.now())
                 .state(BudgetState.PENDING)
@@ -52,6 +54,7 @@ public class Converter {
         return BudgetRequestResponseDto.builder()
                 .id(budget.getId())
                 .applicantId(budget.getApplicantId())
+                .applicantName(budget.getApplicantName())
                 .date(DateTimeUtils.toString(budget.getCreatedAt()))
                 .build();
     }
@@ -69,6 +72,7 @@ public class Converter {
         return BudgetResponseDto.builder()
                 .id(entity.getId())
                 .applicantId(entity.getApplicantId())
+                .applicantName(entity.getApplicantName())
                 .createdAt(DateTimeUtils.toString(entity.getCreatedAt()))
                 .files(entity.getFiles())
                 .detail(toBudgetDetailResponse(entity.getBudgetDetail()))
@@ -89,6 +93,7 @@ public class Converter {
         return budgets.stream()
                 .map(b -> BudgetDataResponseDto.builder()
                         .supplierId(b.getSupplierId())
+                        .supplierName(b.getSupplierName())
                         .price(b.getPrice() != null ? Double.valueOf(b.getPrice()) : null)
                         .daysCount(b.getDaysCount() != null ? b.getDaysCount() : 0)
                         .workerCount(b.getWorkerCount() != null ? b.getWorkerCount() : 0)
