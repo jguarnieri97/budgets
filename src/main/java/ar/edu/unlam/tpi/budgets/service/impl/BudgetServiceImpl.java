@@ -25,8 +25,14 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public BudgetCreationResponseDto create(BudgetCreationRequestDto request) {
+        log.info("Iniciando creación de presupuesto para solicitante ID {} - nombre: {}", request.getApplicantId(), request.getApplicantName());
+
         BudgetRequest budgetRequest = Converter.toBudgetRequest(request);
+        log.debug("Objeto BudgetRequest generado: {}", budgetRequest);
+
         BudgetRequest saved = budgetDAO.save(budgetRequest);
+        log.info("Presupuesto creado con ID: {}", saved.getId());
+
         return BudgetCreationResponseDto.builder()
                 .id(saved.getId())
                 .build();
@@ -34,20 +40,31 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long applicantId) {
+        log.info("Buscando presupuestos para solicitante con ID {}", applicantId);
+
         List<BudgetRequest> budgetEntities = budgetDAO.findByApplicantId(applicantId);
+        log.info("Cantidad de presupuestos encontrados: {}", budgetEntities.size());
+
         return Converter.toBudgetListResponse(budgetEntities);
     }
 
     @Override
     public List<BudgetRequestResponseDto> getBudgetsBySupplierId(Long supplierId) {
+        log.info("Buscando presupuestos para proveedor con ID {}", supplierId);
+
         List<BudgetRequest> budgetEntities = budgetDAO.findBySupplierId(supplierId);
+        log.info("Cantidad de presupuestos encontrados para proveedor {}: {}", supplierId, budgetEntities.size());
+
         return Converter.toBudgetListResponse(budgetEntities);
     }
 
     @Override
     public BudgetResponseDto getBudgetDetailById(String budgetId) {
+        log.info("Buscando detalle de presupuesto con ID {}", budgetId);
+
         BudgetRequest entity = budgetDAO.findById(budgetId);
+        log.info("Detalle de presupuesto obtenido para ID {}", budgetId);
+
         return Converter.toBudgetResponse(entity);
     }
-
 }
