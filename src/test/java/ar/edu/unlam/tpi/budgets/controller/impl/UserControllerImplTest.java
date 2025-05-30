@@ -31,8 +31,8 @@ public class UserControllerImplTest {
         // Arrange
         Long applicantId = 1L;
         List<BudgetRequestResponseDto> expectedList = List.of(
-            BudgetRequestResponseDto.builder().id("id1").build(),
-            BudgetRequestResponseDto.builder().id("id2").build()
+            BudgetDataHelper.budgetRequest("id1"),
+            BudgetDataHelper.budgetRequest("id2")
         );
 
         when(budgetService.getBudgetsByApplicantId(applicantId)).thenReturn(expectedList);
@@ -52,7 +52,7 @@ public class UserControllerImplTest {
         // Arrange
         Long supplierId = 10L;
         List<BudgetRequestResponseDto> expectedList = List.of(
-            BudgetRequestResponseDto.builder().id("id3").build()
+            BudgetDataHelper.budgetRequest("id3")
         );
 
         when(budgetService.getBudgetsBySupplierId(supplierId)).thenReturn(expectedList);

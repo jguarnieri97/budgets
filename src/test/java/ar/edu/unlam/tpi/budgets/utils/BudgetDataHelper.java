@@ -4,6 +4,7 @@ import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.SupplierDataRequest;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetDataResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetDetailResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
@@ -90,6 +91,11 @@ public class BudgetDataHelper {
                 .files(List.of("file1.pdf", "file2.docx"))
                 .build();
     }
+
+    public static BudgetRequestResponseDto budgetRequest(String id) {
+        return BudgetRequestResponseDto.builder().id(id).build();
+    }
+    
     
     
     
