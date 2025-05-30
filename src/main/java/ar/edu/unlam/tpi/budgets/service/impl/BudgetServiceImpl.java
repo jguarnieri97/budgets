@@ -62,9 +62,14 @@ public class BudgetServiceImpl implements BudgetService {
     public BudgetResponseDto getBudgetDetailById(String budgetId) {
         log.info("Buscando detalle de presupuesto con ID {}", budgetId);
 
-        BudgetRequestEntity entity = budgetDAO.findById(budgetId);
-        log.info("Detalle de presupuesto obtenido para ID {}", budgetId);
-
-        return Converter.toBudgetResponse(entity);
+        try {
+            BudgetRequestEntity entity = budgetDAO.findById(budgetId);
+            log.info("Detalle de presupuesto obtenido para ID {}", budgetId);
+            return Converter.toBudgetResponse(entity);
+        } catch (Exception ex) {
+            log.error("Error al obtener detalle del presupuesto con ID {}: {}", budgetId, ex.getMessage(), ex);
+            throw ex;
+        }
     }
+    
 }
