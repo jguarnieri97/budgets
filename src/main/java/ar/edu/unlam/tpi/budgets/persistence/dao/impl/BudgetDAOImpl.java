@@ -1,9 +1,9 @@
-package ar.edu.unlam.tpi.budgets.persistence.impl;
+package ar.edu.unlam.tpi.budgets.persistence.dao.impl;
 
 import ar.edu.unlam.tpi.budgets.exceptions.InternalException;
 import ar.edu.unlam.tpi.budgets.exceptions.NotFoundException;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
-import ar.edu.unlam.tpi.budgets.persistence.BudgetDAO;
+import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

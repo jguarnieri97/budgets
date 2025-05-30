@@ -5,8 +5,9 @@ import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
-import ar.edu.unlam.tpi.budgets.persistence.BudgetDAO;
+import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
+import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
 import ar.edu.unlam.tpi.budgets.utils.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.util.List;
 public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetDAO budgetDAO;
+    private final BudgetCreationResponseBuilder budgetCreationResponseBuilder;
 
     @Override
     public BudgetCreationResponseDto create(BudgetCreationRequestDto request) {
@@ -33,9 +35,7 @@ public class BudgetServiceImpl implements BudgetService {
         BudgetRequest saved = budgetDAO.save(budgetRequest);
         log.info("Presupuesto creado con ID: {}", saved.getId());
 
-        return BudgetCreationResponseDto.builder()
-                .id(saved.getId())
-                .build();
+        return budgetCreationResponseBuilder.build(saved);
     }
 
     @Override

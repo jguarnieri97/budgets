@@ -1,4 +1,4 @@
-package ar.edu.unlam.tpi.budgets.persistence;
+package ar.edu.unlam.tpi.budgets.persistence.dao;
 
 import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
 
