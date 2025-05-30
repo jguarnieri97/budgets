@@ -6,12 +6,14 @@ import ar.edu.unlam.tpi.budgets.dto.response.*;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.Constants;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class BudgetControllerImpl implements BudgetController {
 
     private final BudgetService budgetService;
@@ -27,7 +29,7 @@ public class BudgetControllerImpl implements BudgetController {
     }
 
     @Override
-    public GenericResponse<BudgetCreationResponseDto> createBudget(BudgetCreationRequestDto request) {
+    public GenericResponse<BudgetCreationResponseDto> createBudget(@Valid @RequestBody BudgetCreationRequestDto request) {
         BudgetCreationResponseDto budget = budgetService.create(request);
         return new GenericResponse<>(
                 Constants.STATUS_OK,

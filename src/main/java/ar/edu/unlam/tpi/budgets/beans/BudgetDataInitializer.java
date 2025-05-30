@@ -2,7 +2,7 @@ package ar.edu.unlam.tpi.budgets.beans;
 
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
-import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
+import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import ar.edu.unlam.tpi.budgets.utils.DateTimeUtils;
@@ -23,7 +23,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        BudgetRequest budget1 = BudgetRequest.builder()
+        BudgetRequestEntity budget1 = BudgetRequestEntity.builder()
                 .id("6826712de38b3e1cafe67291")
                 .budgetNumber("00001")
                 .applicantId(1L)
@@ -65,7 +65,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 ))
                 .build();
 
-        BudgetRequest budget2 = BudgetRequest.builder()
+        BudgetRequestEntity budget2 = BudgetRequestEntity.builder()
                 .id("6826712de38b3e1cafe67292")
                 .budgetNumber("00002")
                 .applicantId(1L)
@@ -99,7 +99,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 ))
                 .build();
 
-        BudgetRequest budget3 = BudgetRequest.builder()
+        BudgetRequestEntity budget3 = BudgetRequestEntity.builder()
                 .id("6826712de38b3e1cafe67293")
                 .budgetNumber("Logibyte")
                 .applicantId(1L)
