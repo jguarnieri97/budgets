@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @Builder
 @Document(collection = "budgets")
-public class BudgetRequest {
+public class BudgetRequestEntity {
 
     @Id
     private String id;
