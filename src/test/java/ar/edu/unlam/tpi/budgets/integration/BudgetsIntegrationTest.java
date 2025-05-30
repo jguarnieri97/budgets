@@ -1,8 +1,8 @@
 package ar.edu.unlam.tpi.budgets.integration;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
-import ar.edu.unlam.tpi.budgets.dto.request.SupplierDataRequest;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
+import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,200 +38,113 @@ public class BudgetsIntegrationTest {
         budgetRepository.deleteAll();
     }
 
-    
-@Test
-void testCreateBudget_success() throws Exception {
-    //Crear proveedores manualmente
-    SupplierDataRequest supplier1 = new SupplierDataRequest();
-    supplier1.setSupplierId(10L);
-    supplier1.setSupplierName("Proveedor A");
+    @Test
+    void testCreateBudget_success() throws Exception {
+        BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
+            1L, "Juan Pérez",
+            List.of(
+                BudgetDataHelper.supplier(10L, "Proveedor A"),
+                BudgetDataHelper.supplier(11L, "Proveedor B")
+            )
+        );
 
-    SupplierDataRequest supplier2 = new SupplierDataRequest();
-    supplier2.setSupplierId(11L);
-    supplier2.setSupplierName("Proveedor B");
+        String json = objectMapper.writeValueAsString(request);
 
-    //Crear request
-    BudgetCreationRequestDto request = BudgetCreationRequestDto.builder()
-            .applicantId(1L)
-            .applicantName("Juan Pérez")
-            .isUrgent(false)
-            .estimatedDate(null)
-            .workResume("Instalación eléctrica")
-            .workDetail("Se requiere instalación completa en oficina")
-            .files(List.of("base64img1", "base64img2"))
-            .suppliers(List.of(supplier1, supplier2))
-            .build();
-
-    //Convertir a JSON
-    String json = objectMapper.writeValueAsString(request);
-
-    //Ejecutar el endpoint
-    mockMvc.perform(post("/budgets/v1/budget")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.code").value(200))
-            .andExpect(jsonPath("$.data.id").exists());
-}
-
-
-@Test
-void testCreateBudget_invalidRequest() throws Exception {
-
-      SupplierDataRequest supplier1 = new SupplierDataRequest();
-      supplier1.setSupplierId(10L);
-      supplier1.setSupplierName("Proveedor A");
-  
-      SupplierDataRequest supplier2 = new SupplierDataRequest();
-      supplier2.setSupplierId(11L);
-      supplier2.setSupplierName("Proveedor B");
-    //Crear request inválido
-    BudgetCreationRequestDto request = BudgetCreationRequestDto.builder()
-            .applicantId(null)
-            .applicantName(null)
-            .isUrgent(false)
-            .estimatedDate(null)
-            .workResume("Instalación eléctrica")
-            .workDetail("Se requiere instalación completa en oficina")
-            .files(List.of("base64img1", "base64img2"))
-            .suppliers(List.of(supplier1, supplier2))
-            .build();
-
-    //Convertir a JSON
-    String json = objectMapper.writeValueAsString(request);
-
-    //Ejecutar el endpoint
-    mockMvc.perform(post("/budgets/v1/budget")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json))
-            .andExpect(jsonPath("$.code").value(500))
-            .andExpect(jsonPath("$.message").value("INTERNAL_ERROR"))
-            .andExpect(jsonPath("$.detail").exists());
-
+        mockMvc.perform(post("/budgets/v1/budget")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data.id").exists());
     }
 
+    @Test
+    void testCreateBudget_invalidRequest() throws Exception {
+        String json = objectMapper.writeValueAsString(BudgetDataHelper.createInvalidRequest());
 
-@Test
-void testGetBudgetsByApplicantId_success() throws Exception {
-    // Crear presupuesto para que haya datos
-    SupplierDataRequest supplier1 = new SupplierDataRequest();
-    supplier1.setSupplierId(10L);
-    supplier1.setSupplierName("Proveedor A");
+        mockMvc.perform(post("/budgets/v1/budget")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(jsonPath("$.code").value(500))
+                .andExpect(jsonPath("$.message").value("INTERNAL_ERROR"))
+                .andExpect(jsonPath("$.detail").exists());
+    }
 
-    BudgetCreationRequestDto request = BudgetCreationRequestDto.builder()
-    .applicantId(80L)
-    .applicantName("Tester")
-    .isUrgent(false)
-    .estimatedDate(null)
-    .workResume("Trabajo test")
-    .workDetail("Detalle test")
-    .files(List.of("testimg"))
-    .suppliers(List.of(supplier1))
-    .build();
+    @Test
+    void testGetBudgetsByApplicantId_success() throws Exception {
+        BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
+            80L, "Tester",
+            List.of(BudgetDataHelper.supplier(10L, "Proveedor A"))
+        );
 
-    String json = objectMapper.writeValueAsString(request);
+        mockMvc.perform(post("/budgets/v1/budget")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
 
-    //primero se crea el presupuesto
-    mockMvc.perform(post("/budgets/v1/budget")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
-            .andExpect(status().isOk());
+        mockMvc.perform(get("/budgets/v1/user/applicant/80"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(1));
+    }
 
-    //Consultar por applicantId
-    mockMvc.perform(get("/budgets/v1/user/applicant/80"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.code").value(200))
-            .andExpect(jsonPath("$.data").isArray())
-            .andExpect(jsonPath("$.data.length()").value(1));
+    @Test
+    void testGetBudgetsBySupplierId_success() throws Exception {
+        BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
+            500L, "Solicitante X",
+            List.of(BudgetDataHelper.supplier(123L, "Proveedor A"))
+        );
+
+        mockMvc.perform(post("/budgets/v1/budget")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/budgets/v1/user/supplier/123"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(1));
+    }
+
+    @Test
+    void testGetBudgetDetailById_success() throws Exception {
+        var s1 = BudgetDataHelper.supplier(1L, "ElectraSol");
+        var s2 = BudgetDataHelper.supplier(2L, "Voltix");
+        var s3 = BudgetDataHelper.supplier(3L, "Lumenek");
+
+        BudgetCreationRequestDto request = BudgetCreationRequestDto.builder()
+                .applicantId(999L)
+                .applicantName("Logibyte")
+                .isUrgent(true)
+                .estimatedDate("2024-01-10T03:00:00")
+                .workResume("Reparación de panel interior")
+                .workDetail("Se reparar paneles interiores.")
+                .files(List.of("file1.pdf", "file2.docx"))
+                .suppliers(List.of(s1, s2, s3))
+                .build();
+
+        String response = mockMvc.perform(post("/budgets/v1/budget")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String createdId = objectMapper.readTree(response).path("data").path("id").asText();
+
+        mockMvc.perform(get("/budgets/v1/budget/" + createdId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("SUCCESS"))
+                .andExpect(jsonPath("$.data.id").value(createdId))
+                .andExpect(jsonPath("$.data.applicantName").value("Logibyte"))
+                .andExpect(jsonPath("$.data.files.length()").value(2))
+                .andExpect(jsonPath("$.data.detail.workResume").value("Reparación de panel interior"))
+                .andExpect(jsonPath("$.data.budgets.length()").value(3))
+                .andExpect(jsonPath("$.data.budgets[0].supplierName").value("ElectraSol"));
+    }
 }
 
-
-@Test
-void testGetBudgetsBySupplierId_success() throws Exception {
-
-    SupplierDataRequest supplier1 = new SupplierDataRequest();
-    supplier1.setSupplierId(123L);
-    supplier1.setSupplierName("Proveedor A");
-
-    BudgetCreationRequestDto request = BudgetCreationRequestDto.builder()
-            .applicantId(500L)
-            .applicantName("Solicitante X")
-            .isUrgent(false)
-            .estimatedDate(null)
-            .workResume("Instalación de equipos")
-            .workDetail("Se necesita instalación completa")
-            .files(List.of("imagenB64"))
-            .suppliers(List.of(supplier1))
-            .build();
-
-    String json = objectMapper.writeValueAsString(request);
-
-    mockMvc.perform(post("/budgets/v1/budget")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json))
-            .andExpect(status().isOk());
-
-    mockMvc.perform(get("/budgets/v1/user/supplier/123"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.code").value(200))
-            .andExpect(jsonPath("$.data").isArray())
-            .andExpect(jsonPath("$.data.length()").value(1));
-}
-
-@Test
-void testGetBudgetDetailById_success() throws Exception {
-    //Crear proveedores
-    SupplierDataRequest s1 = new SupplierDataRequest();
-    s1.setSupplierId(1L);
-    s1.setSupplierName("ElectraSol");
-
-    SupplierDataRequest s2 = new SupplierDataRequest();
-    s2.setSupplierId(2L);
-    s2.setSupplierName("Voltix");        
-
-    SupplierDataRequest s3 = new SupplierDataRequest();
-    s3.setSupplierId(3L);
-    s3.setSupplierName("Lumenek");
-
-    //Crear request
-    BudgetCreationRequestDto request = BudgetCreationRequestDto.builder()
-            .applicantId(999L)
-            .applicantName("Logibyte")
-            .isUrgent(true)
-            .estimatedDate("2024-01-10T03:00:00")
-            .workResume("Reparación de panel interior")
-            .workDetail("Se reparar paneles interiores.")
-            .files(List.of("file1.pdf", "file2.docx"))
-            .suppliers(List.of(s1, s2, s3))
-            .build();
-
-    //Crear presupuesto
-    String json = objectMapper.writeValueAsString(request);
-
-    String id = mockMvc.perform(post("/budgets/v1/budget")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json))
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-    //Extraer ID con Jackson
-    String createdId = objectMapper.readTree(id).path("data").path("id").asText();
-
-    //Consultar detalle por ID
-    mockMvc.perform(get("/budgets/v1/budget/" + createdId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.code").value(200))
-            .andExpect(jsonPath("$.message").value("SUCCESS"))
-            .andExpect(jsonPath("$.data.id").value(createdId))
-            .andExpect(jsonPath("$.data.applicantName").value("Logibyte"))
-            .andExpect(jsonPath("$.data.files.length()").value(2))
-            .andExpect(jsonPath("$.data.detail.workResume").value("Reparación de panel interior"))
-            .andExpect(jsonPath("$.data.budgets.length()").value(3))
-            .andExpect(jsonPath("$.data.budgets[0].supplierName").value("ElectraSol"));
-}
-
-
-
-}
