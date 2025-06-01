@@ -18,12 +18,14 @@ public class BudgetRequestEntity {
     @Id
     private String id;
     private String budgetNumber;
+    private Boolean isRead;
 
     @NotNull(message = "El ID del solicitante no puede ser nulo")
     private Long applicantId;
     
     private String applicantName;
     private LocalDateTime createdAt;
+    private String category;
     private BudgetState state;
     private List<String> files;
     private BudgetDetail budgetDetail;

@@ -117,8 +117,6 @@ public class BudgetsIntegrationTest {
         BudgetCreationRequestDto request = BudgetCreationRequestDto.builder()
                 .applicantId(999L)
                 .applicantName("Logibyte")
-                .isUrgent(true)
-                .estimatedDate("2024-01-10T03:00:00")
                 .workResume("Reparación de panel interior")
                 .workDetail("Se reparar paneles interiores.")
                 .files(List.of("file1.pdf", "file2.docx"))

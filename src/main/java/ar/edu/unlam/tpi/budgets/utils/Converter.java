@@ -18,8 +18,6 @@ public class Converter {
 
     public static BudgetRequestEntity toBudgetRequest(BudgetCreationRequestDto request) {
         BudgetDetail detail = BudgetDetail.builder()
-                .isUrgent(request.isUrgent())
-                .estimatedDate(DateTimeUtils.toLocalDateTime(request.getEstimatedDate()))
                 .workResume(request.getWorkResume())
                 .workDetail(request.getWorkDetail())
                 .build();
@@ -28,6 +26,8 @@ public class Converter {
                 .map(data -> Budget.builder()
                         .supplierId(data.getSupplierId())
                         .supplierName(data.getSupplierName())
+                        .hired(false)
+                        .state(BudgetState.PENDING)
                         .build())
                 .collect(Collectors.toList());
 
@@ -36,7 +36,9 @@ public class Converter {
                 .applicantName(request.getApplicantName())
                 .budgetNumber(formatBuildNumber(new Random().nextInt(1000000), 7)) // Genera un número único basado en UUID
                 .createdAt(LocalDateTime.now())
-                .state(BudgetState.PENDING)
+                .state(BudgetState.INITIATED)
+                .isRead(false)
+                .category(request.getCategory())
                 .files(request.getFiles())
                 .budgetDetail(detail)
                 .budgets(budgets)
@@ -76,14 +78,16 @@ public class Converter {
                 .createdAt(DateTimeUtils.toString(entity.getCreatedAt()))
                 .files(entity.getFiles())
                 .detail(toBudgetDetailResponse(entity.getBudgetDetail()))
+                .state(entity.getState().name())
+                .isRead(entity.getIsRead())
+                .category(entity.getCategory())
+                .budgetNumber(entity.getBudgetNumber())
                 .budgets(toBudgetDataResponseList(entity.getBudgets()))
                 .build();
     }
 
     public static BudgetDetailResponseDto toBudgetDetailResponse(BudgetDetail detail) {
         return BudgetDetailResponseDto.builder()
-                .isUrgent(detail.isUrgent())
-                .estimatedDate(DateTimeUtils.toString(detail.getEstimatedDate()))
                 .workResume(detail.getWorkResume())
                 .workDetail(detail.getWorkDetail())
                 .build();
@@ -98,6 +102,8 @@ public class Converter {
                         .daysCount(b.getDaysCount() != null ? b.getDaysCount() : 0)
                         .workerCount(b.getWorkerCount() != null ? b.getWorkerCount() : 0)
                         .detail(b.getDetail() != null ? b.getDetail() : "")
+                        .state(b.getState().name())
+                        .hired(b.getHired())
                         .build())
                 .toList();
     }
