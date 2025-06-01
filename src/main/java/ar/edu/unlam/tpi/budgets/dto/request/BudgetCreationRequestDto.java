@@ -15,10 +15,9 @@ public class BudgetCreationRequestDto {
     private Long applicantId;
     @NotNull(message = "El nombre del solicitante no puede ser nulo")
     private String applicantName;
-    private boolean isUrgent;
-    private String estimatedDate;
     private String workResume;
     private String workDetail;
+    private String category;
     private List<String> files;
     private List<SupplierDataRequest> suppliers;
 

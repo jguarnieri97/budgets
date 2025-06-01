@@ -7,8 +7,6 @@ import lombok.Data;
 @Builder
 public class BudgetDetailResponseDto {
 
-    private Boolean isUrgent;
-    private String estimatedDate;
     private String workResume;
     private String workDetail;
 

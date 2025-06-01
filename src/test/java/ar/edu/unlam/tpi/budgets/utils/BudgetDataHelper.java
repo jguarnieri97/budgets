@@ -9,8 +9,8 @@ import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
+import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class BudgetDataHelper {
@@ -26,8 +26,7 @@ public class BudgetDataHelper {
         return BudgetCreationRequestDto.builder()
                 .applicantId(applicantId)
                 .applicantName(applicantName)
-                .isUrgent(false)
-                .estimatedDate(null)
+                .category("CONTRATISTA")
                 .workResume("Trabajo test")
                 .workDetail("Detalle test")
                 .files(List.of("file1", "file2"))
@@ -39,8 +38,6 @@ public class BudgetDataHelper {
         return BudgetCreationRequestDto.builder()
                 .applicantId(null)
                 .applicantName(null)
-                .isUrgent(false)
-                .estimatedDate(null)
                 .workResume("Trabajo inválido")
                 .workDetail("Sin datos")
                 .files(List.of("img"))
@@ -74,9 +71,10 @@ public class BudgetDataHelper {
                 .id(id)
                 .applicantId(applicantId)
                 .applicantName(applicantName)
+                .state(BudgetState.INITIATED)
+                .isRead(false)
+                .category("CONTRATISTA")
                 .budgetDetail(BudgetDetail.builder()
-                        .isUrgent(true)
-                        .estimatedDate(LocalDateTime.now().plusDays(3))
                         .workResume("Instalación eléctrica")
                         .workDetail("Se requiere instalación completa en oficina")
                         .build())
@@ -87,6 +85,7 @@ public class BudgetDataHelper {
                         .daysCount(2)
                         .workerCount(3)
                         .detail("Tendido de cableado y tablero")
+                        .state(BudgetState.PENDING)
                         .build()))
                 .files(List.of("file1.pdf", "file2.docx"))
                 .build();

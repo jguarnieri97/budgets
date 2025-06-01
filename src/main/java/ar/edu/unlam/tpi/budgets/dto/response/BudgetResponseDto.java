@@ -10,8 +10,12 @@ import java.util.List;
 public class BudgetResponseDto {
 
     private String id;
+    private String budgetNumber;
+    private Boolean isRead;
     private Long applicantId;
     private String applicantName;
+    private String category;
+    private String state;
     private String createdAt;
     private List<String> files;
     private BudgetDetailResponseDto detail;
