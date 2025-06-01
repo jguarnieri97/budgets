@@ -55,8 +55,12 @@ public class Converter {
         }
         return BudgetRequestResponseDto.builder()
                 .id(budget.getId())
+                .budgetNumber(budget.getBudgetNumber())
                 .applicantId(budget.getApplicantId())
                 .applicantName(budget.getApplicantName())
+                .category(budget.getCategory())
+                .state(budget.getState().name())
+                .isRead(budget.getIsRead())
                 .date(DateTimeUtils.toString(budget.getCreatedAt()))
                 .build();
     }

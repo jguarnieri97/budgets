@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetServiceImplTest {
@@ -48,7 +49,7 @@ public class BudgetServiceImplTest {
         BudgetRequestEntity entity = BudgetDataHelper.createBudgetRequestEntity("abc123", 1L, "Juan Pérez");
         BudgetCreationResponseDto expectedResponse = BudgetCreationResponseDto.builder().id("abc123").build();
 
-        when(budgetDAO.save(entity)).thenReturn(entity);
+        when(budgetDAO.save(any(BudgetRequestEntity.class))).thenReturn(entity);
         when(budgetCreationResponseBuilder.build(entity)).thenReturn(expectedResponse);
 
         // Act
