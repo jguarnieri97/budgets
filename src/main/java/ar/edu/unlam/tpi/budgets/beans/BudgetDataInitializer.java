@@ -2,7 +2,7 @@ package ar.edu.unlam.tpi.budgets.beans;
 
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
-import ar.edu.unlam.tpi.budgets.model.BudgetRequest;
+import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import ar.edu.unlam.tpi.budgets.utils.DateTimeUtils;
@@ -23,17 +23,17 @@ public class BudgetDataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        BudgetRequest budget1 = BudgetRequest.builder()
+        BudgetRequestEntity budget1 = BudgetRequestEntity.builder()
                 .id("6826712de38b3e1cafe67291")
                 .budgetNumber("00001")
+                .isRead(false)
                 .applicantId(1L)
                 .applicantName("Logibyte")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T22:56:45"))
+                .category("CONTRATISTA")
                 .state(BudgetState.PENDING)
                 .files(Arrays.asList("file1.pdf", "file2.docx"))
                 .budgetDetail(BudgetDetail.builder()
-                        .isUrgent(true)
-                        .estimatedDate(DateTimeUtils.toLocalDateTime("2024-01-10T03:00:00"))
                         .workResume("Reparación de panel interior")
                         .workDetail("Se reparar paneles interiores.")
                         .build())
@@ -45,6 +45,8 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .daysCount(1)
                                 .workerCount(1)
                                 .detail("Costo de materiales")
+                                .hired(true)
+                                .state(BudgetState.REJECTED)
                                 .build(),
                         Budget.builder()
                                 .supplierId(2L)
@@ -53,6 +55,8 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .daysCount(2)
                                 .workerCount(1)
                                 .detail("Costo de materiales")
+                                .hired(true)
+                                .state(BudgetState.REJECTED)
                                 .build(),
                         Budget.builder()
                                 .supplierId(3L)
@@ -61,21 +65,23 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .daysCount(3)
                                 .workerCount(1)
                                 .detail("Costo de materiales")
+                                .hired(true)
+                                .state(BudgetState.REJECTED)
                                 .build()
                 ))
                 .build();
 
-        BudgetRequest budget2 = BudgetRequest.builder()
+        BudgetRequestEntity budget2 = BudgetRequestEntity.builder()
                 .id("6826712de38b3e1cafe67292")
                 .budgetNumber("00002")
+                .isRead(false)
                 .applicantId(1L)
                 .applicantName("Logibyte")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T23:00:05"))
+                .category("CONTRATISTA")
                 .state(BudgetState.PENDING)
                 .files(Arrays.asList("file3.pdf", "file4.docx"))
                 .budgetDetail(BudgetDetail.builder()
-                        .isUrgent(false)
-                        .estimatedDate(DateTimeUtils.toLocalDateTime("2024-01-10T03:10:00"))
                         .workResume("Reparación de aire acondicionado")
                         .workDetail("Se necesita reparar las goteras en los techos del edificio principal.")
                         .build())
@@ -87,6 +93,8 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .daysCount(1)
                                 .workerCount(1)
                                 .detail("Costo de materiales")
+                                .hired(false)
+                                .state(BudgetState.REJECTED)
                                 .build(),
                         Budget.builder()
                                 .supplierId(3L)
@@ -95,21 +103,23 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .daysCount(1)
                                 .workerCount(1)
                                 .detail("Costo de materiales")
+                                .hired(false)
+                                .state(BudgetState.REJECTED)
                                 .build()
                 ))
                 .build();
 
-        BudgetRequest budget3 = BudgetRequest.builder()
+        BudgetRequestEntity budget3 = BudgetRequestEntity.builder()
                 .id("6826712de38b3e1cafe67293")
-                .budgetNumber("Logibyte")
+                .budgetNumber("00003")
+                .isRead(false)
                 .applicantId(1L)
                 .applicantName("Nexwork")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T23:03:25"))
+                .category("CONTRATISTA")
                 .state(BudgetState.PENDING)
                 .files(Arrays.asList("file5.pdf", "file6.docx"))
                 .budgetDetail(BudgetDetail.builder()
-                        .isUrgent(true)
-                        .estimatedDate(DateTimeUtils.toLocalDateTime("2024-01-10T03:20:00"))
                         .workResume("Instalación eléctrica")
                         .workDetail("Se necesita instalar un sistema eléctrico en el nuevo edificio.")
                         .build())
@@ -121,6 +131,8 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .daysCount(1)
                                 .workerCount(1)
                                 .detail("Costo de materiales")
+                                .hired(false)
+                                .state(BudgetState.REJECTED)
                                 .build(),
                         Budget.builder()
                                 .supplierId(3L)
@@ -129,6 +141,8 @@ public class BudgetDataInitializer implements CommandLineRunner {
                                 .daysCount(1)
                                 .workerCount(1)
                                 .detail("Costo de materiales")
+                                .hired(false)
+                                .state(BudgetState.REJECTED)
                                 .build()
                 ))
                 .build();

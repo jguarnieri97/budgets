@@ -1,6 +1,7 @@
 package ar.edu.unlam.tpi.budgets.model;
 
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -12,14 +13,19 @@ import java.util.List;
 @Data
 @Builder
 @Document(collection = "budgets")
-public class BudgetRequest {
+public class BudgetRequestEntity {
 
     @Id
     private String id;
     private String budgetNumber;
+    private Boolean isRead;
+
+    @NotNull(message = "El ID del solicitante no puede ser nulo")
     private Long applicantId;
+    
     private String applicantName;
     private LocalDateTime createdAt;
+    private String category;
     private BudgetState state;
     private List<String> files;
     private BudgetDetail budgetDetail;

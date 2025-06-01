@@ -8,8 +8,12 @@ import lombok.Data;
 public class BudgetRequestResponseDto {
 
     private String id;
+    private String budgetNumber;
     private Long applicantId;
     private String applicantName;
+    private Boolean isRead;
+    private String category;
+    private String state;
     private String date;
 
 }

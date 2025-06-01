@@ -1,5 +1,6 @@
 package ar.edu.unlam.tpi.budgets.model;
 
+import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,5 +14,7 @@ public class Budget {
     private Integer daysCount;
     private Integer workerCount;
     private String detail;
+    private BudgetState state;
+    private Boolean hired;
 
 }
