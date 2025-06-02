@@ -11,6 +11,8 @@ import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BudgetDataHelper {
@@ -95,7 +97,30 @@ public class BudgetDataHelper {
         return BudgetRequestResponseDto.builder().id(id).build();
     }
     
-    
+    public static List<Budget> getListOfBudgets(){
+        return new ArrayList<>(Arrays.asList(
+            Budget.builder()
+                .supplierId(1L)
+                .supplierName("Proveedor A")
+                .state(BudgetState.PENDING)
+                .build(),
+            Budget.builder()
+                .supplierId(2L)
+                .supplierName("Proveedor B")
+                .state(BudgetState.PENDING)
+                .build()
+        ));
+    }
+
+    public static List<Budget> getOnlyBudget(){
+        return new ArrayList<>(Arrays.asList(
+            Budget.builder()
+                .supplierId(1L)
+                .supplierName("Proveedor A")
+                .state(BudgetState.PENDING)
+                .build()
+        ));
+    }
     
     
 }

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class Converter {
 
+    
     public static BudgetRequestEntity toBudgetRequest(BudgetCreationRequestDto request) {
         BudgetDetail detail = BudgetDetail.builder()
                 .workResume(request.getWorkResume())
