@@ -1,6 +1,8 @@
 package ar.edu.unlam.tpi.budgets.integration;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
+import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,18 +47,16 @@ public class BudgetsIntegrationTest {
     @Test
     void givenValidRequest_whenCreateBudget_thenReturns200AndBudgetId() throws Exception {
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
-            1L, "Juan Pérez",
-            List.of(
-                BudgetDataHelper.supplier(10L, "Proveedor A"),
-                BudgetDataHelper.supplier(11L, "Proveedor B")
-            )
-        );
+                1L, "Juan Pérez",
+                List.of(
+                        BudgetDataHelper.supplier(10L, "Proveedor A"),
+                        BudgetDataHelper.supplier(11L, "Proveedor B")));
 
         String json = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/budgets/v1/budget")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data.id").exists());
@@ -66,8 +67,8 @@ public class BudgetsIntegrationTest {
         String json = objectMapper.writeValueAsString(BudgetDataHelper.createInvalidRequest());
 
         mockMvc.perform(post("/budgets/v1/budget")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
                 .andExpect(jsonPath("$.code").value(500))
                 .andExpect(jsonPath("$.message").value("INTERNAL_ERROR"))
                 .andExpect(jsonPath("$.detail").exists());
@@ -76,9 +77,8 @@ public class BudgetsIntegrationTest {
     @Test
     void givenBudgetsExistForApplicant_whenGetBudgetsByApplicantId_thenReturns200AndBudgets() throws Exception {
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
-            80L, "Tester",
-            List.of(BudgetDataHelper.supplier(10L, "Proveedor A"))
-        );
+                80L, "Tester",
+                List.of(BudgetDataHelper.supplier(10L, "Proveedor A")));
 
         mockMvc.perform(post("/budgets/v1/budget")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,9 +95,8 @@ public class BudgetsIntegrationTest {
     @Test
     void givenBudgetsExistForSupplier_whenGetBudgetsBySupplierId_thenReturns200AndBudgets() throws Exception {
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
-            500L, "Solicitante X",
-            List.of(BudgetDataHelper.supplier(123L, "Proveedor A"))
-        );
+                500L, "Solicitante X",
+                List.of(BudgetDataHelper.supplier(123L, "Proveedor A")));
 
         mockMvc.perform(post("/budgets/v1/budget")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -127,8 +126,8 @@ public class BudgetsIntegrationTest {
                 .build();
 
         String response = mockMvc.perform(post("/budgets/v1/budget")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -149,22 +148,17 @@ public class BudgetsIntegrationTest {
     }
 
     @Test
-    void givenExistingBudgetAndValidProvider_whenUpdateBudget_thenReturns200AndUpdatedData() throws Exception {
-        var s1 = BudgetDataHelper.supplier(1L, "ElectraSol");
-        var s2 = BudgetDataHelper.supplier(2L, "Voltix");
-
-        BudgetCreationRequestDto createRequest = BudgetCreationRequestDto.builder()
-                .applicantId(999L)
-                .applicantName("Logibyte")
-                .workResume("Reparación de panel interior")
-                .workDetail("Se reparar paneles interiores.")
-                .files(List.of("file1.pdf", "file2.docx"))
-                .suppliers(List.of(s1, s2))
-                .build();
+    void testFinalizeBudget_success() throws Exception {
+        
+        BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
+                1L, "Juan Pérez",
+                List.of(
+                        BudgetDataHelper.supplier(10L, "Proveedor A"),
+                        BudgetDataHelper.supplier(11L, "Proveedor B")));
 
         String response = mockMvc.perform(post("/budgets/v1/budget")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -172,26 +166,37 @@ public class BudgetsIntegrationTest {
 
         String createdId = objectMapper.readTree(response).path("data").path("id").asText();
 
-        BudgetUpdateDataRequestDto updateRequest = BudgetUpdatedDataRequestHelper.getBudgetUpdateDataRequestDto();
-        Long providerId = 1L;
+        BudgetFinalizeRequestDto updateRequest = BudgetFinalizeRequestDto.builder()
+                .state(BudgetState.FINALIZED)
+                .supplierHired(999L)
+                .build();
 
-        mockMvc.perform(put("/budgets/v1/budget/{id}/user/{providerId}", createdId, providerId)
+        mockMvc.perform(put("/budgets/v1/budget/{id}", createdId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk());    
+
+
+    }
+    
+
+
+    @Test
+    void testFinalizeBudget_notFound() throws Exception {
+        BudgetFinalizeRequestDto request = BudgetFinalizeRequestDto.builder()
+                .state(BudgetState.FINALIZED)
+                .supplierHired(999L)
+                .build();
+
+        mockMvc.perform(
+                put("/budgets/v1/budget/inventado-1234")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.message").value("UPDATED"));
-
-        mockMvc.perform(get("/budgets/v1/budget/" + createdId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.budgets.length()").value(1))
-                .andExpect(jsonPath("$.data.budgets[0].supplierId").value(providerId))
-                .andExpect(jsonPath("$.data.budgets[0].state").value("ACCEPTED"))
-                .andExpect(jsonPath("$.data.budgets[0].price").value(updateRequest.getPrice()))
-                .andExpect(jsonPath("$.data.budgets[0].daysCount").value(updateRequest.getDaysCount()))
-                .andExpect(jsonPath("$.data.budgets[0].workerCount").value(updateRequest.getWorkerCount()))
-                .andExpect(jsonPath("$.data.budgets[0].detail").value(updateRequest.getDetail()));
+                        .content(objectMapper.writeValueAsString(request))
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.message").value("NOT_FOUND_EXCEPTION"))
+                .andExpect(jsonPath("$.detail").value("Budget request not found"));
     }
 
     @Test
@@ -236,4 +241,5 @@ public class BudgetsIntegrationTest {
     }
 
 }
+
 

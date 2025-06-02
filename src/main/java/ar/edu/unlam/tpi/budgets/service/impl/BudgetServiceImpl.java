@@ -1,6 +1,7 @@
 package ar.edu.unlam.tpi.budgets.service.impl;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
@@ -11,6 +12,7 @@ import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
+import ar.edu.unlam.tpi.budgets.utils.BudgetValidator;
 import ar.edu.unlam.tpi.budgets.utils.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +29,12 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetDAO budgetDAO;
     private final BudgetCreationResponseBuilder budgetCreationResponseBuilder;
+    private final BudgetValidator budgetValidator;
 
     @Override
     public BudgetCreationResponseDto create(BudgetCreationRequestDto request) {
-        log.info("Iniciando creación de presupuesto para solicitante ID {} - nombre: {}", request.getApplicantId(), request.getApplicantName());
+        log.info("Iniciando creación de presupuesto para solicitante ID {} - nombre: {}", request.getApplicantId(),
+                request.getApplicantName());
 
         BudgetRequestEntity budgetRequest = Converter.toBudgetRequest(request);
         log.debug("Objeto BudgetRequest generado: {}", budgetRequest);
@@ -76,7 +80,17 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {
+    public void updateState(String budgetId, BudgetFinalizeRequestDto request) {
+        BudgetRequestEntity entity = budgetDAO.findById(budgetId);
+
+        log.info("Actualizando presupuesto con ID {} a estado {}", budgetId, request.getState());
+        budgetValidator.validateAndApplyStateTransition(entity, request);
+        log.info("Estado actualizado correctamente");
+
+        budgetDAO.save(entity);
+    }
+
+    public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {   
 
         BudgetRequestEntity existingBudget = updateFieldsOfBudget(budgetDAO.findById(id), request, providerId);
         log.info("Actualizando presupuesto con ID {}", id);

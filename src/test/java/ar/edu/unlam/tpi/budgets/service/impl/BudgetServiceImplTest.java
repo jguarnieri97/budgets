@@ -13,6 +13,7 @@ import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
 import ar.edu.unlam.tpi.budgets.utils.BudgetRequestEntityHelper;
 import ar.edu.unlam.tpi.budgets.utils.BudgetUpdatedDataRequestHelper;
+import ar.edu.unlam.tpi.budgets.utils.BudgetValidator;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,9 @@ public class BudgetServiceImplTest {
     @Mock
     private BudgetCreationResponseBuilder budgetCreationResponseBuilder;
 
+    @Mock
+    private BudgetValidator budgetValidator;
+
     @InjectMocks
     private BudgetServiceImpl budgetService;
 
@@ -46,12 +50,10 @@ public class BudgetServiceImplTest {
     public void givenValidRequest_whenCreate_thenReturnResponse() {
         // Arrange
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
-            1L, "Juan Pérez",
-            List.of(
-                BudgetDataHelper.supplier(10L, "Proveedor A"),
-                BudgetDataHelper.supplier(11L, "Proveedor B")
-            )
-        );
+                1L, "Juan Pérez",
+                List.of(
+                        BudgetDataHelper.supplier(10L, "Proveedor A"),
+                        BudgetDataHelper.supplier(11L, "Proveedor B")));
 
         BudgetRequestEntity entity = BudgetDataHelper.createBudgetRequestEntity("abc123", 1L, "Juan Pérez");
         BudgetCreationResponseDto expectedResponse = BudgetCreationResponseDto.builder().id("abc123").build();
@@ -72,9 +74,8 @@ public class BudgetServiceImplTest {
     public void givenApplicantId_whenGetBudgets_thenReturnList() {
         // Arrange
         List<BudgetRequestEntity> entities = List.of(
-            BudgetDataHelper.createBudgetRequestEntity("id1", 1L, "Juan"),
-            BudgetDataHelper.createBudgetRequestEntity("id2", 1L, "Juan")
-        );
+                BudgetDataHelper.createBudgetRequestEntity("id1", 1L, "Juan"),
+                BudgetDataHelper.createBudgetRequestEntity("id2", 1L, "Juan"));
 
         when(budgetDAO.findByApplicantId(1L)).thenReturn(entities);
 
@@ -91,8 +92,7 @@ public class BudgetServiceImplTest {
     public void givenSupplierId_whenGetBudgets_thenReturnList() {
         // Arrange
         List<BudgetRequestEntity> entities = List.of(
-            BudgetDataHelper.createBudgetRequestEntity("id1", 1L, "Juan")
-        );
+                BudgetDataHelper.createBudgetRequestEntity("id1", 1L, "Juan"));
 
         when(budgetDAO.findBySupplierId(100L)).thenReturn(entities);
 
