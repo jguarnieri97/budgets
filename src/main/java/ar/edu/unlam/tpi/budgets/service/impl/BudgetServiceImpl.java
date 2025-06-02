@@ -1,7 +1,7 @@
 package ar.edu.unlam.tpi.budgets.service.impl;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
-import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
@@ -80,7 +80,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void updateState(String budgetId, BudgetUpdateRequestDto request) {
+    public void updateState(String budgetId, BudgetFinalizeRequestDto request) {
         BudgetRequestEntity entity = budgetDAO.findById(budgetId);
 
         log.info("Actualizando presupuesto con ID {} a estado {}", budgetId, request.getState());
@@ -90,7 +90,7 @@ public class BudgetServiceImpl implements BudgetService {
         budgetDAO.save(entity);
     }
 
-    public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {
+    public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {   
 
         BudgetRequestEntity existingBudget = updateFieldsOfBudget(budgetDAO.findById(id), request, providerId);
         log.info("Actualizando presupuesto con ID {}", id);

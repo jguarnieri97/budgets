@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BudgetUpdateRequestDto {
+public class BudgetFinalizeRequestDto {
     @NotNull
     private BudgetState state;
 

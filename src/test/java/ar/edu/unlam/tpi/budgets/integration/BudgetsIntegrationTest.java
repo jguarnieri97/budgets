@@ -1,7 +1,7 @@
 package ar.edu.unlam.tpi.budgets.integration;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
-import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
@@ -148,7 +148,7 @@ public class BudgetsIntegrationTest {
     }
 
     @Test
-    void testUpdateBudget_success() throws Exception {
+    void testFinalizeBudget_success() throws Exception {
         
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
                 1L, "Juan Pérez",
@@ -166,7 +166,7 @@ public class BudgetsIntegrationTest {
 
         String createdId = objectMapper.readTree(response).path("data").path("id").asText();
 
-        BudgetUpdateRequestDto updateRequest = BudgetUpdateRequestDto.builder()
+        BudgetFinalizeRequestDto updateRequest = BudgetFinalizeRequestDto.builder()
                 .state(BudgetState.FINALIZED)
                 .supplierHired(999L)
                 .build();
@@ -182,8 +182,8 @@ public class BudgetsIntegrationTest {
 
 
     @Test
-    void testUpdateBudget_notFound() throws Exception {
-        BudgetUpdateRequestDto request = BudgetUpdateRequestDto.builder()
+    void testFinalizeBudget_notFound() throws Exception {
+        BudgetFinalizeRequestDto request = BudgetFinalizeRequestDto.builder()
                 .state(BudgetState.FINALIZED)
                 .supplierHired(999L)
                 .build();

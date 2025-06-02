@@ -2,7 +2,7 @@ package ar.edu.unlam.tpi.budgets.controller;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
-import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -41,6 +41,6 @@ public interface BudgetController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update budget state")
     GenericResponse<Void> updateState(@PathVariable String budgetId,
-            @Valid @RequestBody BudgetUpdateRequestDto request);
+            @Valid @RequestBody BudgetFinalizeRequestDto request);
 
 }
