@@ -22,7 +22,8 @@ public class BudgetDataHelper {
         return supplier;
     }
 
-    public static BudgetCreationRequestDto createValidRequest(Long applicantId, String applicantName, List<SupplierDataRequest> suppliers) {
+    public static BudgetCreationRequestDto createValidRequest(Long applicantId, String applicantName,
+            List<SupplierDataRequest> suppliers) {
         return BudgetCreationRequestDto.builder()
                 .applicantId(applicantId)
                 .applicantName(applicantName)
@@ -47,23 +48,22 @@ public class BudgetDataHelper {
 
     public static BudgetResponseDto createBudgetResponse(String id) {
         return BudgetResponseDto.builder()
-            .id(id)
-            .applicantName("Logibyte")
-            .files(List.of("file1.pdf", "file2.docx"))
-            .detail(BudgetDetailResponseDto.builder()
-                .workResume("Reparación de panel interior")
-                .workDetail("Detalle del trabajo")
-                .build())
-            .budgets(List.of(
-                BudgetDataResponseDto.builder()
-                    .supplierId(1L)
-                    .supplierName("ElectraSol")
-                    .price(100000.0)
-                    .daysCount(2)
-                    .workerCount(3)
-                    .build()
-            ))
-            .build();
+                .id(id)
+                .applicantName("Logibyte")
+                .files(List.of("file1.pdf", "file2.docx"))
+                .detail(BudgetDetailResponseDto.builder()
+                        .workResume("Reparación de panel interior")
+                        .workDetail("Detalle del trabajo")
+                        .build())
+                .budgets(List.of(
+                        BudgetDataResponseDto.builder()
+                                .supplierId(1L)
+                                .supplierName("ElectraSol")
+                                .price(100000.0)
+                                .daysCount(2)
+                                .workerCount(3)
+                                .build()))
+                .build();
     }
 
     public static BudgetRequestEntity createBudgetRequestEntity(String id, Long applicantId, String applicantName) {
@@ -94,8 +94,35 @@ public class BudgetDataHelper {
     public static BudgetRequestResponseDto budgetRequest(String id) {
         return BudgetRequestResponseDto.builder().id(id).build();
     }
-    
-    
-    
-    
+
+    public static BudgetRequestEntity createBudgetRequestWithBudgets(String id, List<Budget> budgets) {
+        return BudgetRequestEntity.builder()
+                .id(id)
+                .applicantId(999L)
+                .applicantName("Mocked Applicant")
+                .state(BudgetState.PENDING)
+                .category("CONTRATISTA")
+                .isRead(false)
+                .budgetDetail(BudgetDetail.builder()
+                        .workResume("Test")
+                        .workDetail("Test detail")
+                        .build())
+                .budgets(budgets)
+                .files(List.of("file.pdf"))
+                .build();
+    }
+
+    public static Budget createBudget(Long supplierId, boolean hired, BudgetState state) {
+        return Budget.builder()
+                .supplierId(supplierId)
+                .supplierName("Proveedor " + supplierId)
+                .hired(hired)
+                .price(100000f)
+                .daysCount(1)
+                .workerCount(2)
+                .detail("Test Detail")
+                .state(state)
+                .build();
+    }
+
 }

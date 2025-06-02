@@ -1,6 +1,7 @@
 package ar.edu.unlam.tpi.budgets.controller;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -26,5 +27,12 @@ public interface BudgetController {
     @Operation(summary = "Create budget request")
     GenericResponse<BudgetCreationResponseDto> createBudget(
             @Valid @RequestBody BudgetCreationRequestDto request);
+
+    @PutMapping("/{budgetId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update budget request")
+    GenericResponse<Void> updateBudget(
+            @PathVariable("budgetId") @NotNull String budgetId,
+            @Valid @RequestBody BudgetUpdateRequestDto request);
 
 }
