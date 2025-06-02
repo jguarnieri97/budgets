@@ -39,8 +39,8 @@ public interface BudgetController {
 
     @PutMapping("/{budgetId}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Update budget state")
-    GenericResponse<Void> updateState(@PathVariable String budgetId,
+    @Operation(summary = "Finalize budget request")
+    GenericResponse<Void> finalizeBudgetRequest(@PathVariable String budgetId,
             @Valid @RequestBody BudgetFinalizeRequestDto request);
 
 }

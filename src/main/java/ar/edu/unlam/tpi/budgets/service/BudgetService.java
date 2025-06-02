@@ -16,5 +16,5 @@ public interface BudgetService {
     List<BudgetRequestResponseDto> getBudgetsBySupplierId(Long supplierId);
     BudgetResponseDto getBudgetDetailById(String budgetId);
     void update(String id, Long providerId,  BudgetUpdateDataRequestDto request);
-    void updateState(String budgetId, BudgetFinalizeRequestDto request);
+    void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request);
 }

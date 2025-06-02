@@ -80,7 +80,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void updateState(String budgetId, BudgetFinalizeRequestDto request) {
+    public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {        
         BudgetRequestEntity entity = budgetDAO.findById(budgetId);
 
         log.info("Actualizando presupuesto con ID {} a estado {}", budgetId, request.getState());

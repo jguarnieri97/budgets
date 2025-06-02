@@ -48,8 +48,8 @@ public class BudgetControllerImpl implements BudgetController {
     }
 
     @Override
-    public GenericResponse<Void> updateState(String budgetId, BudgetFinalizeRequestDto request) {
-        budgetService.updateState(budgetId, request);
+    public GenericResponse<Void> finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
+        budgetService.finalizeBudgetRequest(budgetId, request);
         return new GenericResponse<>(Constants.STATUS_OK, Constants.UPDATED_MESSAGE, null);
     }
 
