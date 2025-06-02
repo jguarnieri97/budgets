@@ -2,6 +2,7 @@ package ar.edu.unlam.tpi.budgets.controller.impl;
 
 import ar.edu.unlam.tpi.budgets.controller.BudgetController;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.Constants;
@@ -35,6 +36,15 @@ public class BudgetControllerImpl implements BudgetController {
                 Constants.STATUS_OK,
                 Constants.SUCCESS_MESSAGE,
                 budget);
+    }
+
+    @Override
+    public GenericResponse<Void> updateBudget(String id, Long providerId, BudgetUpdateDataRequestDto request) {
+        budgetService.update(id,providerId,request);
+        return new GenericResponse<>(
+                Constants.STATUS_OK,
+                Constants.UPDATED_MESSAGE,
+                null);
     }
 
 }
