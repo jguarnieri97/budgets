@@ -37,7 +37,7 @@ public interface BudgetController {
     GenericResponse<Void> updateBudget(@PathVariable String id, @PathVariable Long providerId,
             @Valid @RequestBody BudgetUpdateDataRequestDto request);
 
-    @PutMapping("/{budgetId}/state")
+    @PutMapping("/{budgetId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update budget state")
     GenericResponse<Void> updateState(@PathVariable String budgetId,

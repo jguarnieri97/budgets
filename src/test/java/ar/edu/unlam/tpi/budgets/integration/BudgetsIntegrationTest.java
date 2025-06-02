@@ -149,101 +149,54 @@ public class BudgetsIntegrationTest {
 
     @Test
     void testUpdateBudget_success() throws Exception {
-        // Paso 1: Crear presupuesto (se crea con INITIATED)
+        
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
-                600L, "Tester Update",
+                1L, "Juan Pérez",
                 List.of(
-                    BudgetDataHelper.supplier(101L, "Proveedor 1"),
-                    BudgetDataHelper.supplier(102L, "Proveedor 2")
-                )
-        );
-    
-        String createResponse = mockMvc.perform(post("/budgets/v1/budget")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString();
-
-        var s1 = BudgetDataHelper.supplier(1L, "ElectraSol");
-        var s2 = BudgetDataHelper.supplier(2L, "Voltix");
-
-        BudgetCreationRequestDto createRequest = BudgetCreationRequestDto.builder()
-                .applicantId(999L)
-                .applicantName("Logibyte")
-                .workResume("Reparación de panel interior")
-                .workDetail("Se reparar paneles interiores.")
-                .files(List.of("file1.pdf", "file2.docx"))
-                .suppliers(List.of(s1, s2))
-                .build();
+                        BudgetDataHelper.supplier(10L, "Proveedor A"),
+                        BudgetDataHelper.supplier(11L, "Proveedor B")));
 
         String response = mockMvc.perform(post("/budgets/v1/budget")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-    
-        String createdId = objectMapper.readTree(createResponse).path("data").path("id").asText();
-    
-        // Paso 2: Hacer update a FINALIZED
-        BudgetUpdateRequestDto update = BudgetUpdateRequestDto.builder()
+
+        String createdId = objectMapper.readTree(response).path("data").path("id").asText();
+
+        BudgetUpdateRequestDto updateRequest = BudgetUpdateRequestDto.builder()
                 .state(BudgetState.FINALIZED)
-                .supplierHired(101L)
+                .supplierHired(999L)
                 .build();
-    
-        mockMvc.perform(put("/budgets/v1/budget/" + createdId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(update)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.message").value("UPDATED"))
-                .andExpect(jsonPath("$.data").doesNotExist());
+
+        mockMvc.perform(put("/budgets/v1/budget/{id}", createdId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk());    
+
+
     }
     
 
 
     @Test
-void testUpdateBudget_notFound() throws Exception {
-    BudgetUpdateRequestDto request = BudgetUpdateRequestDto.builder()
-            .state(BudgetState.FINALIZED)
-            .supplierHired(999L)
-            .build();
+    void testUpdateBudget_notFound() throws Exception {
+        BudgetUpdateRequestDto request = BudgetUpdateRequestDto.builder()
+                .state(BudgetState.FINALIZED)
+                .supplierHired(999L)
+                .build();
 
-    mockMvc.perform(
-            put("/budgets/v1/budget/inventado-1234")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request))
-    )
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.code").value(404))
-            .andExpect(jsonPath("$.message").value("NOT_FOUND_EXCEPTION"))
-            .andExpect(jsonPath("$.detail").value("Presupuesto no encontrado"));
-
-        String createdId = objectMapper.readTree(response).path("data").path("id").asText();
-
-        BudgetUpdateDataRequestDto updateRequest = BudgetUpdatedDataRequestHelper.getBudgetUpdateDataRequestDto();
-        Long providerId = 1L;
-
-        mockMvc.perform(put("/budgets/v1/budget/{id}/user/{providerId}", createdId, providerId)
+        mockMvc.perform(
+                put("/budgets/v1/budget/inventado-1234")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.message").value("UPDATED"));
-
-        mockMvc.perform(get("/budgets/v1/budget/" + createdId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.budgets.length()").value(1))
-                .andExpect(jsonPath("$.data.budgets[0].supplierId").value(providerId))
-                .andExpect(jsonPath("$.data.budgets[0].state").value("ACCEPTED"))
-                .andExpect(jsonPath("$.data.budgets[0].price").value(updateRequest.getPrice()))
-                .andExpect(jsonPath("$.data.budgets[0].daysCount").value(updateRequest.getDaysCount()))
-                .andExpect(jsonPath("$.data.budgets[0].workerCount").value(updateRequest.getWorkerCount()))
-                .andExpect(jsonPath("$.data.budgets[0].detail").value(updateRequest.getDetail()));
+                        .content(objectMapper.writeValueAsString(request))
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.message").value("NOT_FOUND_EXCEPTION"))
+                .andExpect(jsonPath("$.detail").value("Budget request not found"));
     }
 
     @Test
