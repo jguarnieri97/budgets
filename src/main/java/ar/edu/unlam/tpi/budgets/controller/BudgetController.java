@@ -1,11 +1,14 @@
 package ar.edu.unlam.tpi.budgets.controller;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.websocket.server.PathParam;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +31,16 @@ public interface BudgetController {
     GenericResponse<BudgetCreationResponseDto> createBudget(
             @Valid @RequestBody BudgetCreationRequestDto request);
 
-    @PutMapping("/{budgetId}")
+    @PutMapping("/{id}/user/{providerId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update budget request")
-    GenericResponse<Void> updateBudget(
-            @PathVariable("budgetId") @NotNull String budgetId,
+    GenericResponse<Void> updateBudget(@PathVariable String id, @PathVariable Long providerId,
+            @Valid @RequestBody BudgetUpdateDataRequestDto request);
+
+    @PutMapping("/{budgetId}/state")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update budget state")
+    GenericResponse<Void> updateState(@PathVariable String budgetId,
             @Valid @RequestBody BudgetUpdateRequestDto request);
 
 }

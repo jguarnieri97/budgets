@@ -1,16 +1,18 @@
 package ar.edu.unlam.tpi.budgets.service.impl;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
-import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
-import ar.edu.unlam.tpi.budgets.exceptions.NotFoundException;
+import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
+import ar.edu.unlam.tpi.budgets.utils.BudgetRequestEntityHelper;
+import ar.edu.unlam.tpi.budgets.utils.BudgetUpdatedDataRequestHelper;
 import ar.edu.unlam.tpi.budgets.utils.BudgetValidator;
 
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +27,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.argThat;
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetServiceImplTest {
@@ -120,45 +122,62 @@ public class BudgetServiceImplTest {
     }
 
     @Test
-    @DisplayName("Actualizar presupuesto exitosamente a FINALIZED")
-    public void givenValidUpdateRequest_whenUpdate_thenValidatorAndSaveAreCalled() {
+    @DisplayName("Actualizar presupuesto exitosamente")
+    public void givenValidUpdateRequest_whenUpdate_thenUpdateBudget() {
         // Arrange
-        String budgetId = "budget123";
-        BudgetUpdateRequestDto updateRequest = BudgetUpdateRequestDto.builder()
-                .state(BudgetState.FINALIZED)
-                .supplierHired(1L)
-                .build();
+        String budgetId = "abc123";
+        Long providerId = 1L;
+        BudgetUpdateDataRequestDto updateRequest = BudgetUpdatedDataRequestHelper.getBudgetUpdateDataRequestDto();
 
-        BudgetRequestEntity entity = BudgetDataHelper.createBudgetRequestWithBudgets(budgetId,
-                List.of(BudgetDataHelper.createBudget(1L, false, BudgetState.PENDING)));
-        entity.setState(BudgetState.INITIATED);
+        // Create a budget with multiple providers using ArrayList for mutability
+        List<Budget> budgets = BudgetDataHelper.getListOfBudgets();
 
-        when(budgetDAO.findById(budgetId)).thenReturn(entity);
+        BudgetRequestEntity existingBudget = BudgetRequestEntityHelper.getBudgetRequestEntity(budgetId, budgets);
+
+        when(budgetDAO.findById(budgetId)).thenReturn(existingBudget);
+        when(budgetDAO.save(any(BudgetRequestEntity.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        budgetService.update(budgetId, updateRequest);
+        budgetService.update(budgetId, providerId, updateRequest);
 
         // Assert
-        verify(budgetValidator, times(1)).validateAndApplyStateTransition(entity, updateRequest);
-        verify(budgetDAO, times(1)).save(entity);
+        verify(budgetDAO).findById(budgetId);
+        verify(budgetDAO).save(argThat(savedBudget -> {
+            // Verify only one budget remains (the updated one)
+            assertEquals(1, savedBudget.getBudgets().size());
+            
+            // Verify the updated budget has the correct values
+            Budget updatedBudget = savedBudget.getBudgets().get(0);
+            assertEquals(providerId, updatedBudget.getSupplierId());
+            assertEquals(BudgetState.ACCEPTED, updatedBudget.getState());
+            assertEquals(updateRequest.getPrice(), updatedBudget.getPrice());
+            assertEquals(updateRequest.getDaysCount(), updatedBudget.getDaysCount());
+            assertEquals(updateRequest.getWorkerCount(), updatedBudget.getWorkerCount());
+            assertEquals(updateRequest.getDetail(), updatedBudget.getDetail());
+            
+            return true;
+        }));
     }
 
     @Test
-    @DisplayName("Lanzar NotFoundException si el presupuesto no existe al actualizar")
-    public void givenInvalidBudgetId_whenUpdate_thenThrowNotFoundException() {
+    @DisplayName("Actualizar presupuesto con proveedor inexistente")
+    public void givenNonExistentProvider_whenUpdate_thenThrowException() {
         // Arrange
-        String invalidId = "inexistente-999";
-        BudgetUpdateRequestDto request = BudgetUpdateRequestDto.builder()
-                .state(BudgetState.FINALIZED)
-                .supplierHired(101L)
-                .build();
-    
-        when(budgetDAO.findById(invalidId)).thenThrow(new NotFoundException("Presupuesto no encontrado"));
-    
+        String budgetId = "abc123";
+        Long nonExistentProviderId = 999L;
+        BudgetUpdateDataRequestDto updateRequest = BudgetUpdatedDataRequestHelper.getBudgetUpdateDataRequestDto();
+
+        // Create a budget with a single provider using ArrayList for mutability
+        List<Budget> budgets = BudgetDataHelper.getOnlyBudget();
+
+        BudgetRequestEntity existingBudget = BudgetRequestEntityHelper.getBudgetRequestEntity(budgetId, budgets);
+
+        when(budgetDAO.findById(budgetId)).thenReturn(existingBudget);
+
         // Act & Assert
-        NotFoundException exception = assertThrows(NotFoundException.class, () ->
-                budgetService.update(invalidId, request));
-    
-        assertEquals("Presupuesto no encontrado", exception.getDetail());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> 
+            budgetService.update(budgetId, nonExistentProviderId, updateRequest)
+        );
+        assertEquals("No se encontró el proveedor con ID: " + nonExistentProviderId, exception.getMessage());
     }
 }

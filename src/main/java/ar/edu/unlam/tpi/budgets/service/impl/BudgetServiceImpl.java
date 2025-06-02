@@ -2,10 +2,13 @@ package ar.edu.unlam.tpi.budgets.service.impl;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
+import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
@@ -77,7 +80,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void update(String budgetId, BudgetUpdateRequestDto request) {
+    public void updateState(String budgetId, BudgetUpdateRequestDto request) {
         BudgetRequestEntity entity = budgetDAO.findById(budgetId);
 
         log.info("Actualizando presupuesto con ID {} a estado {}", budgetId, request.getState());
@@ -87,4 +90,35 @@ public class BudgetServiceImpl implements BudgetService {
         budgetDAO.save(entity);
     }
 
+    public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {
+
+        BudgetRequestEntity existingBudget = updateFieldsOfBudget(budgetDAO.findById(id), request, providerId);
+        log.info("Actualizando presupuesto con ID {}", id);
+
+        budgetDAO.save(existingBudget);
+        log.info("Presupuesto actualizado con ID: {}", existingBudget.getId());
+    }
+
+    private BudgetRequestEntity updateFieldsOfBudget(BudgetRequestEntity existingBudget, BudgetUpdateDataRequestDto request, Long providerId) {
+        
+        Budget budgetSelected = existingBudget.getBudgets().stream()
+            .filter(b -> b.getSupplierId().equals(providerId))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("No se encontró el proveedor con ID: " + providerId));
+        
+        budgetSelected.setState(BudgetState.ACCEPTED);
+        budgetSelected.setPrice(request.getPrice());
+        budgetSelected.setDaysCount(request.getDaysCount());
+        budgetSelected.setWorkerCount(request.getWorkerCount());
+        budgetSelected.setDetail(request.getDetail());
+
+        existingBudget.getBudgets().clear();
+
+        existingBudget.setBudgets(List.of(
+            budgetSelected
+        ));
+
+        return existingBudget;
+    }
+    
 }

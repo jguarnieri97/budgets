@@ -11,6 +11,8 @@ import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BudgetDataHelper {
@@ -94,35 +96,31 @@ public class BudgetDataHelper {
     public static BudgetRequestResponseDto budgetRequest(String id) {
         return BudgetRequestResponseDto.builder().id(id).build();
     }
-
-    public static BudgetRequestEntity createBudgetRequestWithBudgets(String id, List<Budget> budgets) {
-        return BudgetRequestEntity.builder()
-                .id(id)
-                .applicantId(999L)
-                .applicantName("Mocked Applicant")
+    
+    public static List<Budget> getListOfBudgets(){
+        return new ArrayList<>(Arrays.asList(
+            Budget.builder()
+                .supplierId(1L)
+                .supplierName("Proveedor A")
                 .state(BudgetState.PENDING)
-                .category("CONTRATISTA")
-                .isRead(false)
-                .budgetDetail(BudgetDetail.builder()
-                        .workResume("Test")
-                        .workDetail("Test detail")
-                        .build())
-                .budgets(budgets)
-                .files(List.of("file.pdf"))
-                .build();
+                .build(),
+            Budget.builder()
+                .supplierId(2L)
+                .supplierName("Proveedor B")
+                .state(BudgetState.PENDING)
+                .build()
+        ));
     }
 
-    public static Budget createBudget(Long supplierId, boolean hired, BudgetState state) {
-        return Budget.builder()
-                .supplierId(supplierId)
-                .supplierName("Proveedor " + supplierId)
-                .hired(hired)
-                .price(100000f)
-                .daysCount(1)
-                .workerCount(2)
-                .detail("Test Detail")
-                .state(state)
-                .build();
+    public static List<Budget> getOnlyBudget(){
+        return new ArrayList<>(Arrays.asList(
+            Budget.builder()
+                .supplierId(1L)
+                .supplierName("Proveedor A")
+                .state(BudgetState.PENDING)
+                .build()
+        ));
     }
-
+    
+    
 }
