@@ -6,6 +6,7 @@ import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetSupplierResponseDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
@@ -57,13 +58,13 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public List<BudgetRequestResponseDto> getBudgetsBySupplierId(Long supplierId) {
-        log.info("Buscando presupuestos para proveedor con ID {}", supplierId);
-
+    public List<BudgetSupplierResponseDto> getBudgetsBySupplierId(Long supplierId) {
+        log.info("Buscando presupuestos enviados por el proveedor con ID {}", supplierId);
+    
         List<BudgetRequestEntity> budgetEntities = budgetDAO.findBySupplierId(supplierId);
-        log.info("Cantidad de presupuestos encontrados para proveedor {}: {}", supplierId, budgetEntities.size());
-
-        return Converter.toBudgetListResponse(budgetEntities);
+        log.info("Cantidad de solicitudes encontradas donde participó el proveedor {}: {}", supplierId, budgetEntities.size());
+    
+        return Converter.toBudgetSupplierResponseList(budgetEntities, supplierId);
     }
 
     @Override
