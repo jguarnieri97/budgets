@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -80,15 +81,24 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {        
+    public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
         BudgetRequestEntity entity = budgetDAO.findById(budgetId);
-
+    
         log.info("Actualizando presupuesto con ID {} a estado {}", budgetId, request.getState());
         budgetValidator.validateAndApplyStateTransition(entity, request);
         log.info("Estado actualizado correctamente");
-
+    
+        Long supplierHired = request.getSupplierHired(); 
+    
+        entity.setBudgets(
+            entity.getBudgets().stream()
+                .filter(b -> b.getSupplierId().equals(supplierHired))
+                .collect(Collectors.toList())
+        );
+    
         budgetDAO.save(entity);
     }
+
 
     public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {   
 
@@ -100,24 +110,20 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     private BudgetRequestEntity updateFieldsOfBudget(BudgetRequestEntity existingBudget, BudgetUpdateDataRequestDto request, Long providerId) {
-        
-        Budget budgetSelected = existingBudget.getBudgets().stream()
+    
+        existingBudget.getBudgets().stream()
             .filter(b -> b.getSupplierId().equals(providerId))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("No se encontró el proveedor con ID: " + providerId));
-        
-        budgetSelected.setState(BudgetState.ACCEPTED);
-        budgetSelected.setPrice(request.getPrice());
-        budgetSelected.setDaysCount(request.getDaysCount());
-        budgetSelected.setWorkerCount(request.getWorkerCount());
-        budgetSelected.setDetail(request.getDetail());
-
-        existingBudget.getBudgets().clear();
-
-        existingBudget.setBudgets(List.of(
-            budgetSelected
-        ));
-
+            .ifPresentOrElse(budget -> {
+                budget.setState(BudgetState.ACCEPTED);
+                budget.setPrice(request.getPrice());
+                budget.setDaysCount(request.getDaysCount());
+                budget.setWorkerCount(request.getWorkerCount());
+                budget.setDetail(request.getDetail());
+            }, () -> {
+                throw new IllegalArgumentException("No se encontró el proveedor con ID: " + providerId);
+            });
+    
         return existingBudget;
     }
     
