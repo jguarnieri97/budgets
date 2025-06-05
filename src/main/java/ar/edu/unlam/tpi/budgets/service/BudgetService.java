@@ -1,6 +1,8 @@
 package ar.edu.unlam.tpi.budgets.service;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
@@ -13,5 +15,6 @@ public interface BudgetService {
     List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long applicantId);
     List<BudgetRequestResponseDto> getBudgetsBySupplierId(Long supplierId);
     BudgetResponseDto getBudgetDetailById(String budgetId);
-
+    void update(String id, Long providerId,  BudgetUpdateDataRequestDto request);
+    void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request);
 }
