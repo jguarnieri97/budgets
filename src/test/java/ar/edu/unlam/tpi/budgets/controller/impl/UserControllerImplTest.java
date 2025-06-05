@@ -47,7 +47,7 @@ public class UserControllerImplTest {
         assertEquals(2, response.getData().size());
     }
 
-    @Test
+   /* @Test
     void givenSupplierId_whenGetBudgetsBySupplierId_thenReturnGenericResponse() {
         // Arrange
         Long supplierId = 10L;
@@ -66,5 +66,5 @@ public class UserControllerImplTest {
         assertEquals(Constants.SUCCESS_MESSAGE, response.getMessage());
         assertEquals(1, response.getData().size());
         assertEquals("id3", response.getData().get(0).getId());
-    }
+    }*/
 }

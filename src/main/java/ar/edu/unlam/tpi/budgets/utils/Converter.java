@@ -113,4 +113,21 @@ public class Converter {
                 .toList();
     }
 
+    public static List<BudgetSupplierResponseDto> toBudgetSupplierResponseList(List<BudgetRequestEntity> entities, Long supplierId) {
+        return entities.stream()
+            .flatMap(request -> request.getBudgets().stream()
+                .filter(b -> b.getSupplierId().equals(supplierId))
+                .map(b -> BudgetSupplierResponseDto.builder()
+                    .id(request.getId()) //ID de la solicitud
+                    .budgetNumber(request.getBudgetNumber())
+                    .isRead(request.getIsRead())
+                    .applicantId(request.getApplicantId())
+                    .applicantName(request.getApplicantName())
+                    .category(request.getCategory())
+                    .state(b.getState().name()) //Estado del presupuesto individual
+                    .date(DateTimeUtils.toString(request.getCreatedAt()))
+                    .build()))
+            .toList();
+    }
+
 }

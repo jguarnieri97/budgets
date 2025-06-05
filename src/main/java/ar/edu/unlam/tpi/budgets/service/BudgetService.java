@@ -6,6 +6,7 @@ import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetSupplierResponseDto;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface BudgetService {
 
     BudgetCreationResponseDto create(BudgetCreationRequestDto request);
     List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long applicantId);
-    List<BudgetRequestResponseDto> getBudgetsBySupplierId(Long supplierId);
+    List<BudgetSupplierResponseDto> getBudgetsBySupplierId(Long supplierId);
     BudgetResponseDto getBudgetDetailById(String budgetId);
     void update(String id, Long providerId,  BudgetUpdateDataRequestDto request);
     void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request);
