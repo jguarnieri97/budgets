@@ -23,7 +23,6 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -148,7 +147,7 @@ public class BudgetsIntegrationTest {
     }
 
     @Test
-    void testFinalizeBudget_success() throws Exception {
+    void givenValidRequest_whenFinalizeBudget_thenReturns200() throws Exception {
         
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
                 1L, "Juan Pérez",
@@ -167,7 +166,6 @@ public class BudgetsIntegrationTest {
         String createdId = objectMapper.readTree(response).path("data").path("id").asText();
 
         BudgetFinalizeRequestDto updateRequest = BudgetFinalizeRequestDto.builder()
-                .state(BudgetState.FINALIZED)
                 .supplierHired(999L)
                 .build();
 
@@ -182,9 +180,8 @@ public class BudgetsIntegrationTest {
 
 
     @Test
-    void testFinalizeBudget_notFound() throws Exception {
+    void givenNonExistentBudget_whenFinalizeBudget_thenReturns404() throws Exception {
         BudgetFinalizeRequestDto request = BudgetFinalizeRequestDto.builder()
-                .state(BudgetState.FINALIZED)
                 .supplierHired(999L)
                 .build();
 

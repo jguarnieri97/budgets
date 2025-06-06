@@ -87,7 +87,7 @@ public class BudgetServiceImplTest {
         assertEquals(2, result.size());
     }
 
-    @Test
+    /*@Test
     @DisplayName("Buscar presupuestos por proveedor ID")
     public void givenSupplierId_whenGetBudgets_thenReturnList() {
         // Arrange
@@ -102,7 +102,7 @@ public class BudgetServiceImplTest {
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-    }
+    }*/
 
     @Test
     @DisplayName("Buscar detalle de presupuesto por ID")

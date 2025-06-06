@@ -13,34 +13,37 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
 @RequestMapping("budgets/v1/budget")
 @Validated
 public interface BudgetController {
 
+        @GetMapping("/{budgetId}")
+        @ResponseStatus(HttpStatus.OK)
+        @Operation(summary = "Get budget detail by id")
+        GenericResponse<BudgetResponseDto> getBudgetDetailById(
+                        @PathVariable("budgetId") @NotNull String budgetId);
 
-    @GetMapping("/{budgetId}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get budget detail by id")
-    GenericResponse<BudgetResponseDto> getBudgetDetailById(
-            @PathVariable("budgetId") @NotNull String budgetId);
+        @PostMapping
+        @ResponseStatus(HttpStatus.OK)
+        @Operation(summary = "Create budget request")
+        GenericResponse<BudgetCreationResponseDto> createBudget(
+                        @Valid @RequestBody BudgetCreationRequestDto request);
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Create budget request")
-    GenericResponse<BudgetCreationResponseDto> createBudget(
-            @Valid @RequestBody BudgetCreationRequestDto request);
+        @PutMapping("/{id}/user/{providerId}")
+        @ResponseStatus(HttpStatus.OK)
+        @Operation(summary = "Update budget request")
+        GenericResponse<Void> updateBudget(@PathVariable String id, @PathVariable Long providerId,
+                        @Valid @RequestBody BudgetUpdateDataRequestDto request);
 
-    @PutMapping("/{id}/user/{providerId}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Update budget request")
-    GenericResponse<Void> updateBudget(@PathVariable String id, @PathVariable Long providerId,
-            @Valid @RequestBody BudgetUpdateDataRequestDto request);
+        @PutMapping("/{budgetId}")
+        @ResponseStatus(HttpStatus.OK)
+        @Operation(summary = "Finalize budget request")
+        GenericResponse<Void> finalizeBudgetRequest(@PathVariable String budgetId,
+                        @Valid @RequestBody BudgetFinalizeRequestDto request);
 
-    @PutMapping("/{budgetId}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Finalize budget request")
-    GenericResponse<Void> finalizeBudgetRequest(@PathVariable String budgetId,
-            @Valid @RequestBody BudgetFinalizeRequestDto request);
+        @PutMapping("/{id}/finalize-request")
+        @ResponseStatus(HttpStatus.OK)
+        @Operation(summary = "Finalize budget request")
+        GenericResponse<Void> finalizeRequestOnly(@PathVariable String id);
 
 }
