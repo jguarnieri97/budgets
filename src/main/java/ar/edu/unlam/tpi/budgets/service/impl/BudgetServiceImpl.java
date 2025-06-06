@@ -82,23 +82,16 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
-        BudgetRequestEntity entity = budgetDAO.findById(budgetId);
-    
-        log.info("Actualizando presupuesto con ID {} a estado {}", budgetId, request.getState());
-        budgetValidator.validateAndApplyStateTransition(entity, request);
-        log.info("Estado actualizado correctamente");
-    
-        Long supplierHired = request.getSupplierHired(); 
-    
-        entity.setBudgets(
-            entity.getBudgets().stream()
-                .filter(b -> b.getSupplierId().equals(supplierHired))
-                .collect(Collectors.toList())
-        );
-    
-        budgetDAO.save(entity);
-    }
+public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
+    BudgetRequestEntity entity = budgetDAO.findById(budgetId);
+
+    log.info("Validando proveedor contratado");
+    budgetValidator.validateSupplierHired(entity, request);
+
+    log.info("Guardando presupuesto elegido");
+    budgetDAO.save(entity);
+}
+
 
 
     public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {   

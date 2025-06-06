@@ -12,6 +12,8 @@ public class BudgetSupplierResponseDto {
     private Long applicantId;
     private String applicantName;
     private String category;
-    private String state; // Estado del presupuesto individual (Budget)
+    private String budgetState; // Estado del presupuesto individual (Budget)
+    private String budgetRequestState; // Estado de la solicitud de presupuesto (BudgetRequest)
+    private Boolean isHired;
     private String date;
 }

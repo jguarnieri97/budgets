@@ -124,8 +124,10 @@ public class Converter {
                     .applicantId(request.getApplicantId())
                     .applicantName(request.getApplicantName())
                     .category(request.getCategory())
-                    .state(b.getState().name()) //Estado del presupuesto individual
+                    .budgetState(b.getState().name()) //Estado del presupuesto individual
+                    .budgetRequestState(request.getState().name()) //Estado de la solicitud de presupuesto
                     .date(DateTimeUtils.toString(request.getCreatedAt()))
+                    .isHired(b.getHired())
                     .build()))
             .toList();
     }
