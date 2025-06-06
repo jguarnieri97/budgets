@@ -53,4 +53,10 @@ public class BudgetControllerImpl implements BudgetController {
         return new GenericResponse<>(Constants.STATUS_OK, Constants.UPDATED_MESSAGE, null);
     }
 
+    @Override
+    public GenericResponse<Void> finalizeRequestOnly(String id) {
+        budgetService.finalizeRequestOnly(id);
+        return new GenericResponse<>(Constants.STATUS_OK, Constants.UPDATED_MESSAGE, null);
+    }
+
 }

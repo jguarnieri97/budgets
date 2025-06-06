@@ -120,5 +120,14 @@ public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto requ
     
         return existingBudget;
     }
+
+    @Override
+    public void finalizeRequestOnly(String id) {
+        BudgetRequestEntity entity = budgetDAO.findById(id);
+        log.info("Finalizando presupuesto con ID {}", id);
+        entity.setState(BudgetState.FINALIZED);
+        log.info("Presupuesto finalizado con ID: {}", id);
+        budgetDAO.save(entity);
+    }
     
 }

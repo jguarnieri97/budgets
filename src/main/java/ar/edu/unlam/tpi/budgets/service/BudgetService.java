@@ -18,4 +18,5 @@ public interface BudgetService {
     BudgetResponseDto getBudgetDetailById(String budgetId);
     void update(String id, Long providerId,  BudgetUpdateDataRequestDto request);
     void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request);
+    void finalizeRequestOnly(String id);
 }
