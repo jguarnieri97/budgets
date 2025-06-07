@@ -4,10 +4,9 @@ import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetSupplierResponseDto;
-import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -48,7 +46,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long applicantId) {
+    public List<BudgetResponseDto> getBudgetsByApplicantId(Long applicantId) {
         log.info("Buscando presupuestos para solicitante con ID {}", applicantId);
 
         List<BudgetRequestEntity> budgetEntities = budgetDAO.findByApplicantId(applicantId);
@@ -68,7 +66,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public BudgetResponseDto getBudgetDetailById(String budgetId) {
+    public BudgetResponseDetailDto getBudgetDetailById(String budgetId) {
         log.info("Buscando detalle de presupuesto con ID {}", budgetId);
 
         try {
@@ -82,17 +80,24 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
-    BudgetRequestEntity entity = budgetDAO.findById(budgetId);
+    public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
+        BudgetRequestEntity entity = budgetDAO.findById(budgetId);
 
-    log.info("Validando proveedor contratado");
-    budgetValidator.validateSupplierHired(entity, request);
+        log.info("Validando proveedor contratado");
+        budgetValidator.validateSupplierHired(entity, request);
 
-    log.info("Guardando presupuesto elegido");
-    budgetDAO.save(entity);
-}
+        log.info("Guardando presupuesto elegido");
+        budgetDAO.save(entity);
+    }
 
-
+    @Override
+    public void finalizeRequestOnly(String id) {
+        BudgetRequestEntity entity = budgetDAO.findById(id);
+        log.info("Finalizando presupuesto con ID {}", id);
+        entity.setState(BudgetState.FINALIZED);
+        log.info("Presupuesto finalizado con ID: {}", id);
+        budgetDAO.save(entity);
+    }
 
     public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {   
 
@@ -119,15 +124,6 @@ public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto requ
             });
     
         return existingBudget;
-    }
-
-    @Override
-    public void finalizeRequestOnly(String id) {
-        BudgetRequestEntity entity = budgetDAO.findById(id);
-        log.info("Finalizando presupuesto con ID {}", id);
-        entity.setState(BudgetState.FINALIZED);
-        log.info("Presupuesto finalizado con ID: {}", id);
-        budgetDAO.save(entity);
     }
     
 }

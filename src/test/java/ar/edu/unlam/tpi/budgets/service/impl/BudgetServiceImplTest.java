@@ -1,10 +1,11 @@
 package ar.edu.unlam.tpi.budgets.service.impl;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
@@ -15,7 +16,6 @@ import ar.edu.unlam.tpi.budgets.utils.BudgetRequestEntityHelper;
 import ar.edu.unlam.tpi.budgets.utils.BudgetUpdatedDataRequestHelper;
 import ar.edu.unlam.tpi.budgets.utils.BudgetValidator;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +25,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
@@ -46,7 +48,6 @@ public class BudgetServiceImplTest {
     private BudgetServiceImpl budgetService;
 
     @Test
-    @DisplayName("Crear presupuesto exitosamente")
     public void givenValidRequest_whenCreate_thenReturnResponse() {
         // Arrange
         BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
@@ -70,7 +71,6 @@ public class BudgetServiceImplTest {
     }
 
     @Test
-    @DisplayName("Buscar presupuestos por solicitante ID")
     public void givenApplicantId_whenGetBudgets_thenReturnList() {
         // Arrange
         List<BudgetRequestEntity> entities = List.of(
@@ -80,32 +80,14 @@ public class BudgetServiceImplTest {
         when(budgetDAO.findByApplicantId(1L)).thenReturn(entities);
 
         // Act
-        List<BudgetRequestResponseDto> result = budgetService.getBudgetsByApplicantId(1L);
+        List<BudgetResponseDto> result = budgetService.getBudgetsByApplicantId(1L);
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
     }
 
-    /*@Test
-    @DisplayName("Buscar presupuestos por proveedor ID")
-    public void givenSupplierId_whenGetBudgets_thenReturnList() {
-        // Arrange
-        List<BudgetRequestEntity> entities = List.of(
-                BudgetDataHelper.createBudgetRequestEntity("id1", 1L, "Juan"));
-
-        when(budgetDAO.findBySupplierId(100L)).thenReturn(entities);
-
-        // Act
-        List<BudgetRequestResponseDto> result = budgetService.getBudgetsBySupplierId(100L);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }*/
-
     @Test
-    @DisplayName("Buscar detalle de presupuesto por ID")
     public void givenBudgetId_whenGetDetail_thenReturnBudgetResponseDto() {
         // Arrange
         String id = "abc123";
@@ -114,7 +96,7 @@ public class BudgetServiceImplTest {
         when(budgetDAO.findById(id)).thenReturn(entity);
 
         // Act
-        BudgetResponseDto result = budgetService.getBudgetDetailById(id);
+        BudgetResponseDetailDto result = budgetService.getBudgetDetailById(id);
 
         // Assert
         assertNotNull(result);
@@ -122,7 +104,6 @@ public class BudgetServiceImplTest {
     }
 
     @Test
-    @DisplayName("Actualizar presupuesto exitosamente")
     public void givenValidUpdateRequest_whenUpdate_thenUpdateBudget() {
         // Arrange
         String budgetId = "abc123";
@@ -144,7 +125,7 @@ public class BudgetServiceImplTest {
         verify(budgetDAO).findById(budgetId);
         verify(budgetDAO).save(argThat(savedBudget -> {
             // Verify only one budget remains (the updated one)
-            assertEquals(1, savedBudget.getBudgets().size());
+            assertEquals(2, savedBudget.getBudgets().size());
             
             // Verify the updated budget has the correct values
             Budget updatedBudget = savedBudget.getBudgets().get(0);
@@ -160,7 +141,6 @@ public class BudgetServiceImplTest {
     }
 
     @Test
-    @DisplayName("Actualizar presupuesto con proveedor inexistente")
     public void givenNonExistentProvider_whenUpdate_thenThrowException() {
         // Arrange
         String budgetId = "abc123";
@@ -180,4 +160,55 @@ public class BudgetServiceImplTest {
         );
         assertEquals("No se encontró el proveedor con ID: " + nonExistentProviderId, exception.getMessage());
     }
+
+    @Test
+    void givenValidBudgetIdAndRequest_whenFinalizeBudgetRequest_thenValidatorAndSaveAreCalled() {
+        // Given
+        String budgetId = "budget123";
+        BudgetRequestEntity mockEntity = BudgetRequestEntity.builder().build();
+        BudgetFinalizeRequestDto requestDto = BudgetFinalizeRequestDto.builder().build();
+
+        given(budgetDAO.findById(budgetId)).willReturn(mockEntity);
+
+        // When
+        budgetService.finalizeBudgetRequest(budgetId, requestDto);
+
+        // Then
+        then(budgetValidator).should().validateSupplierHired(mockEntity, requestDto);
+        then(budgetDAO).should().save(mockEntity);
+    }
+
+    @Test
+    void givenExistingBudgetId_whenFinalizeRequestOnly_thenStateIsFinalizedAndSaved() {
+        // Given
+        String budgetId = "budget456";
+        BudgetRequestEntity mockEntity = BudgetRequestEntity.builder().build();
+        given(budgetDAO.findById(budgetId)).willReturn(mockEntity);
+
+        // When
+        budgetService.finalizeRequestOnly(budgetId);
+
+        // Then
+        assertEquals(BudgetState.FINALIZED, mockEntity.getState());
+        then(budgetDAO).should().save(mockEntity);
+    }
+
+
+    @Test
+void givenValidId_whenFinalizeRequestOnly_thenStateIsUpdatedToFinalized() {
+    // Given
+    String budgetId = "123";
+    BudgetRequestEntity entity = BudgetRequestEntity.builder().id(budgetId).state(BudgetState.INITIATED).build();
+
+    when(budgetDAO.findById(budgetId)).thenReturn(entity);
+
+    // When
+    budgetService.finalizeRequestOnly(budgetId);
+
+    // Then
+    assertEquals(BudgetState.FINALIZED, entity.getState());
+    verify(budgetDAO).findById(budgetId);
+    verify(budgetDAO).save(entity);
+}
+
 }

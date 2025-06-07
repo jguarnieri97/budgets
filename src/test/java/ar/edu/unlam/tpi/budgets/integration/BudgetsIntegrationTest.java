@@ -2,7 +2,6 @@ package ar.edu.unlam.tpi.budgets.integration;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
@@ -166,7 +165,7 @@ public class BudgetsIntegrationTest {
         String createdId = objectMapper.readTree(response).path("data").path("id").asText();
 
         BudgetFinalizeRequestDto updateRequest = BudgetFinalizeRequestDto.builder()
-                .supplierHired(999L)
+                .supplierHired(10L)
                 .build();
 
         mockMvc.perform(put("/budgets/v1/budget/{id}", createdId)
@@ -236,6 +235,29 @@ public class BudgetsIntegrationTest {
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+void givenValidId_whenFinalizeRequestOnly_thenReturns200() throws Exception {
+    // Crear un presupuesto con estado inicial (ej: INITIATED)
+    BudgetCreationRequestDto request = BudgetDataHelper.createValidRequest(
+            1L, "Juan Pérez",
+            List.of(BudgetDataHelper.supplier(10L, "Proveedor A")));
+
+    String response = mockMvc.perform(post("/budgets/v1/budget")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    String createdId = objectMapper.readTree(response).path("data").path("id").asText();
+
+    // Ejecutar el endpoint de finalize-request
+    mockMvc.perform(put("/budgets/v1/budget/{id}/finalize-request", createdId))
+            .andExpect(status().isOk());
+}
+
 
 }
 

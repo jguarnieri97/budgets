@@ -1,7 +1,7 @@
 package ar.edu.unlam.tpi.budgets.controller.impl;
 
 import ar.edu.unlam.tpi.budgets.controller.UserController;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetSupplierResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.GenericResponse;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
@@ -18,8 +18,8 @@ public class UserControllerImpl implements UserController {
     private final BudgetService budgetService;
 
     @Override
-    public GenericResponse<List<BudgetRequestResponseDto>> getBudgetsByApplicantId(Long applicantId) {
-        List<BudgetRequestResponseDto> budgetList = budgetService.getBudgetsByApplicantId(applicantId);
+    public GenericResponse<List<BudgetResponseDto>> getBudgetsByApplicantId(Long applicantId) {
+        List<BudgetResponseDto> budgetList = budgetService.getBudgetsByApplicantId(applicantId);
         return new GenericResponse<>(
                 Constants.STATUS_OK,
                 Constants.SUCCESS_MESSAGE,
