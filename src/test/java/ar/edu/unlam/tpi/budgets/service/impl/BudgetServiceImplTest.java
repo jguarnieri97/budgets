@@ -3,8 +3,8 @@ package ar.edu.unlam.tpi.budgets.service.impl;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
@@ -80,7 +80,7 @@ public class BudgetServiceImplTest {
         when(budgetDAO.findByApplicantId(1L)).thenReturn(entities);
 
         // Act
-        List<BudgetRequestResponseDto> result = budgetService.getBudgetsByApplicantId(1L);
+        List<BudgetResponseDto> result = budgetService.getBudgetsByApplicantId(1L);
 
         // Assert
         assertNotNull(result);
@@ -114,7 +114,7 @@ public class BudgetServiceImplTest {
         when(budgetDAO.findById(id)).thenReturn(entity);
 
         // Act
-        BudgetResponseDto result = budgetService.getBudgetDetailById(id);
+        BudgetResponseDetailDto result = budgetService.getBudgetDetailById(id);
 
         // Assert
         assertNotNull(result);

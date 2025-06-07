@@ -50,11 +50,11 @@ public class Converter {
         return String.format("%0" + minDigits + "d", buildNumber);
     }
 
-    public static BudgetRequestResponseDto toBudgetRequestResponse(BudgetRequestEntity budget) {
+    public static BudgetResponseDto toBudgetRequestResponse(BudgetRequestEntity budget) {
         if (budget == null) {
             return null;
         }
-        return BudgetRequestResponseDto.builder()
+        return BudgetResponseDto.builder()
                 .id(budget.getId())
                 .budgetNumber(budget.getBudgetNumber())
                 .applicantId(budget.getApplicantId())
@@ -66,17 +66,17 @@ public class Converter {
                 .build();
     }
 
-    public static List<BudgetRequestResponseDto> toBudgetListResponse(List<BudgetRequestEntity> budgetRequests) {
+    public static List<BudgetResponseDto> toBudgetListResponse(List<BudgetRequestEntity> budgetRequests) {
         return budgetRequests.stream()
                 .map(Converter::toBudgetRequestResponse)
                 .collect(Collectors.toList());
     }
 
-    public static BudgetResponseDto toBudgetResponse(BudgetRequestEntity entity) {
+    public static BudgetResponseDetailDto toBudgetResponse(BudgetRequestEntity entity) {
         if (entity == null) {
             return null;
         }
-        return BudgetResponseDto.builder()
+        return BudgetResponseDetailDto.builder()
                 .id(entity.getId())
                 .applicantId(entity.getApplicantId())
                 .applicantName(entity.getApplicantName())

@@ -1,6 +1,6 @@
 package ar.edu.unlam.tpi.budgets.controller.impl;
 
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.GenericResponse;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
@@ -30,7 +30,7 @@ public class UserControllerImplTest {
     void givenApplicantId_whenGetBudgetsByApplicantId_thenReturnGenericResponse() {
         // Arrange
         Long applicantId = 1L;
-        List<BudgetRequestResponseDto> expectedList = List.of(
+        List<BudgetResponseDto> expectedList = List.of(
             BudgetDataHelper.budgetRequest("id1"),
             BudgetDataHelper.budgetRequest("id2")
         );
@@ -38,7 +38,7 @@ public class UserControllerImplTest {
         when(budgetService.getBudgetsByApplicantId(applicantId)).thenReturn(expectedList);
 
         // Act
-        GenericResponse<List<BudgetRequestResponseDto>> response = userController.getBudgetsByApplicantId(applicantId);
+        GenericResponse<List<BudgetResponseDto>> response = userController.getBudgetsByApplicantId(applicantId);
 
         // Assert
         assertNotNull(response);

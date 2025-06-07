@@ -4,8 +4,8 @@ import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetUpdateDataRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetSupplierResponseDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
@@ -48,7 +48,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public List<BudgetRequestResponseDto> getBudgetsByApplicantId(Long applicantId) {
+    public List<BudgetResponseDto> getBudgetsByApplicantId(Long applicantId) {
         log.info("Buscando presupuestos para solicitante con ID {}", applicantId);
 
         List<BudgetRequestEntity> budgetEntities = budgetDAO.findByApplicantId(applicantId);
@@ -68,7 +68,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public BudgetResponseDto getBudgetDetailById(String budgetId) {
+    public BudgetResponseDetailDto getBudgetDetailById(String budgetId) {
         log.info("Buscando detalle de presupuesto con ID {}", budgetId);
 
         try {

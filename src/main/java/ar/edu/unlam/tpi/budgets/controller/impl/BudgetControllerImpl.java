@@ -20,8 +20,8 @@ public class BudgetControllerImpl implements BudgetController {
     private final BudgetService budgetService;
 
     @Override
-    public GenericResponse<BudgetResponseDto> getBudgetDetailById(String budgetId) {
-        BudgetResponseDto budget = budgetService.getBudgetDetailById(budgetId);
+    public GenericResponse<BudgetResponseDetailDto> getBudgetDetailById(String budgetId) {
+        BudgetResponseDetailDto budget = budgetService.getBudgetDetailById(budgetId);
         return new GenericResponse<>(
                 Constants.STATUS_OK,
                 Constants.SUCCESS_MESSAGE,

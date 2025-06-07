@@ -2,7 +2,7 @@ package ar.edu.unlam.tpi.budgets.controller.impl;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetCreationResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.dto.response.GenericResponse;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
@@ -60,12 +60,12 @@ public class BudgetControllerImplTest {
     void givenBudgetId_whenGetBudgetDetail_thenReturnGenericResponse() {
         // Arrange
         String id = "abc123";
-        BudgetResponseDto responseDto = BudgetDataHelper.createBudgetResponse(id);
+        BudgetResponseDetailDto responseDto = BudgetDataHelper.createBudgetResponse(id);
 
         when(budgetService.getBudgetDetailById(id)).thenReturn(responseDto);
 
         // Act
-        GenericResponse<BudgetResponseDto> result = budgetController.getBudgetDetailById(id);
+        GenericResponse<BudgetResponseDetailDto> result = budgetController.getBudgetDetailById(id);
 
         // Assert
         assertNotNull(result);

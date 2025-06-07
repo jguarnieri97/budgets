@@ -7,7 +7,6 @@ import ar.edu.unlam.tpi.budgets.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.websocket.server.PathParam;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +19,7 @@ public interface BudgetController {
         @GetMapping("/{budgetId}")
         @ResponseStatus(HttpStatus.OK)
         @Operation(summary = "Get budget detail by id")
-        GenericResponse<BudgetResponseDto> getBudgetDetailById(
+        GenericResponse<BudgetResponseDetailDto> getBudgetDetailById(
                         @PathVariable("budgetId") @NotNull String budgetId);
 
         @PostMapping

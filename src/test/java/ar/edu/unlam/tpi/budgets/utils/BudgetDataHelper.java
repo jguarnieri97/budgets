@@ -4,8 +4,8 @@ import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.request.SupplierDataRequest;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetDataResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetDetailResponseDto;
-import ar.edu.unlam.tpi.budgets.dto.response.BudgetRequestResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
+import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
@@ -48,8 +48,8 @@ public class BudgetDataHelper {
                 .build();
     }
 
-    public static BudgetResponseDto createBudgetResponse(String id) {
-        return BudgetResponseDto.builder()
+    public static BudgetResponseDetailDto createBudgetResponse(String id) {
+        return BudgetResponseDetailDto.builder()
                 .id(id)
                 .applicantName("Logibyte")
                 .files(List.of("file1.pdf", "file2.docx"))
@@ -93,8 +93,8 @@ public class BudgetDataHelper {
                 .build();
     }
 
-    public static BudgetRequestResponseDto budgetRequest(String id) {
-        return BudgetRequestResponseDto.builder().id(id).build();
+    public static BudgetResponseDto budgetRequest(String id) {
+        return BudgetResponseDto.builder().id(id).build();
     }
     
     public static List<Budget> getListOfBudgets(){
