@@ -6,6 +6,7 @@ import ar.edu.unlam.tpi.budgets.dto.response.BudgetDataResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetDetailResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
+import ar.edu.unlam.tpi.budgets.dto.response.*;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
@@ -121,6 +122,20 @@ public class BudgetDataHelper {
                 .build()
         ));
     }
-    
-    
+
+    public static BudgetSupplierResponseDto createBudgetSupplierResponse(String id) {
+        return BudgetSupplierResponseDto.builder()
+                .id(id)
+                .budgetNumber("BUDGET-" + id)
+                .isRead(false)
+                .applicantId(1L)
+                .applicantName("Solicitante " + id)
+                .category("CONTRATISTA")
+                .budgetState("PENDING")
+                .budgetRequestState("IN_PROGRESS")
+                .isHired(false)
+                .date("2025-06-07T10:00:00")
+                .build();
+    }
+
 }
