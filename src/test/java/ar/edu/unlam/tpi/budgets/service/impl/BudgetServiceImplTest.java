@@ -193,4 +193,22 @@ public class BudgetServiceImplTest {
         then(budgetDAO).should().save(mockEntity);
     }
 
+
+    @Test
+void givenValidId_whenFinalizeRequestOnly_thenStateIsUpdatedToFinalized() {
+    // Given
+    String budgetId = "123";
+    BudgetRequestEntity entity = BudgetRequestEntity.builder().id(budgetId).state(BudgetState.INITIATED).build();
+
+    when(budgetDAO.findById(budgetId)).thenReturn(entity);
+
+    // When
+    budgetService.finalizeRequestOnly(budgetId);
+
+    // Then
+    assertEquals(BudgetState.FINALIZED, entity.getState());
+    verify(budgetDAO).findById(budgetId);
+    verify(budgetDAO).save(entity);
+}
+
 }

@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -125,5 +126,6 @@ public class BudgetControllerImplTest {
         assertEquals(Constants.STATUS_OK, response.getCode(), "El código de estado debería ser 200");
         assertEquals(Constants.UPDATED_MESSAGE, response.getMessage(), "El mensaje debería indicar actualización exitosa");
         assertNull(response.getData(), "No debería haber datos en la respuesta");
+        verify(budgetService).finalizeRequestOnly(budgetId);
     }
 }
