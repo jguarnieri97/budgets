@@ -2,10 +2,7 @@ package ar.edu.unlam.tpi.budgets.utils;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
-import ar.edu.unlam.tpi.budgets.model.Budget;
-import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
-import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
+import ar.edu.unlam.tpi.budgets.model.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -37,7 +34,7 @@ public class Converter {
                 .applicantName(request.getApplicantName())
                 .budgetNumber(formatBuildNumber(new Random().nextInt(1000000), 7)) // Genera un número único basado en UUID
                 .createdAt(LocalDateTime.now())
-                .state(BudgetState.INITIATED)
+                .state(BudgetRequestState.INITIATED)
                 .isRead(false)
                 .category(request.getCategory())
                 .files(request.getFiles())

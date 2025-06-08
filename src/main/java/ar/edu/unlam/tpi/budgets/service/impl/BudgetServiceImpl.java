@@ -8,7 +8,8 @@ import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetSupplierResponseDto;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
+import ar.edu.unlam.tpi.budgets.model.BudgetRequestState;
+import ar.edu.unlam.tpi.budgets.model.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
 import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
@@ -94,7 +95,7 @@ public class BudgetServiceImpl implements BudgetService {
     public void finalizeRequestOnly(String id) {
         BudgetRequestEntity entity = budgetDAO.findById(id);
         log.info("Finalizando presupuesto con ID {}", id);
-        entity.setState(BudgetState.FINALIZED);
+        entity.setState(BudgetRequestState.FINALIZED);
         log.info("Presupuesto finalizado con ID: {}", id);
         budgetDAO.save(entity);
     }

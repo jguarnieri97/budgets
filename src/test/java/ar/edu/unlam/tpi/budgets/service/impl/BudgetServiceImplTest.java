@@ -8,7 +8,8 @@ import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.model.Budget;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
+import ar.edu.unlam.tpi.budgets.model.BudgetRequestState;
+import ar.edu.unlam.tpi.budgets.model.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
@@ -189,7 +190,7 @@ public class BudgetServiceImplTest {
         budgetService.finalizeRequestOnly(budgetId);
 
         // Then
-        assertEquals(BudgetState.FINALIZED, mockEntity.getState());
+        assertEquals(BudgetRequestState.FINALIZED, mockEntity.getState());
         then(budgetDAO).should().save(mockEntity);
     }
 
@@ -198,7 +199,7 @@ public class BudgetServiceImplTest {
 void givenValidId_whenFinalizeRequestOnly_thenStateIsUpdatedToFinalized() {
     // Given
     String budgetId = "123";
-    BudgetRequestEntity entity = BudgetRequestEntity.builder().id(budgetId).state(BudgetState.INITIATED).build();
+    BudgetRequestEntity entity = BudgetRequestEntity.builder().id(budgetId).state(BudgetRequestState.FINALIZED).build();
 
     when(budgetDAO.findById(budgetId)).thenReturn(entity);
 
@@ -206,7 +207,7 @@ void givenValidId_whenFinalizeRequestOnly_thenStateIsUpdatedToFinalized() {
     budgetService.finalizeRequestOnly(budgetId);
 
     // Then
-    assertEquals(BudgetState.FINALIZED, entity.getState());
+    assertEquals(BudgetRequestState.FINALIZED, entity.getState());
     verify(budgetDAO).findById(budgetId);
     verify(budgetDAO).save(entity);
 }

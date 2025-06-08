@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetFinalizeRequestDto;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
+import ar.edu.unlam.tpi.budgets.model.BudgetState;
 import ar.edu.unlam.tpi.budgets.exceptions.NotFoundException;
 
 
