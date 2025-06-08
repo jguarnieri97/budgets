@@ -1,6 +1,5 @@
 package ar.edu.unlam.tpi.budgets.model;
 
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +25,7 @@ public class BudgetRequestEntity {
     private String applicantName;
     private LocalDateTime createdAt;
     private String category;
-    private BudgetState state;
+    private BudgetRequestState state;
     private List<String> files;
     private BudgetDetail budgetDetail;
     private List<Budget> budgets;

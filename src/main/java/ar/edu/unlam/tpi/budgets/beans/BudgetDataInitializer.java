@@ -1,9 +1,6 @@
 package ar.edu.unlam.tpi.budgets.beans;
 
-import ar.edu.unlam.tpi.budgets.model.Budget;
-import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
-import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
+import ar.edu.unlam.tpi.budgets.model.*;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
 import ar.edu.unlam.tpi.budgets.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +28,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .applicantName("Logibyte")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T22:56:45"))
                 .category("CONTRATISTA")
-                .state(BudgetState.PENDING)
+                .state(BudgetRequestState.INITIATED)
                 .files(Arrays.asList("file1.pdf", "file2.docx"))
                 .budgetDetail(BudgetDetail.builder()
                         .workResume("Reparación de panel interior")
@@ -79,7 +76,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .applicantName("Logibyte")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T23:00:05"))
                 .category("CONTRATISTA")
-                .state(BudgetState.PENDING)
+                .state(BudgetRequestState.FINALIZED)
                 .files(Arrays.asList("file3.pdf", "file4.docx"))
                 .budgetDetail(BudgetDetail.builder()
                         .workResume("Reparación de aire acondicionado")
@@ -117,7 +114,7 @@ public class BudgetDataInitializer implements CommandLineRunner {
                 .applicantName("Nexwork")
                 .createdAt(DateTimeUtils.toLocalDateTime("2025-05-15T23:03:25"))
                 .category("CONTRATISTA")
-                .state(BudgetState.PENDING)
+                .state(BudgetRequestState.FINALIZED)
                 .files(Arrays.asList("file5.pdf", "file6.docx"))
                 .budgetDetail(BudgetDetail.builder()
                         .workResume("Instalación eléctrica")

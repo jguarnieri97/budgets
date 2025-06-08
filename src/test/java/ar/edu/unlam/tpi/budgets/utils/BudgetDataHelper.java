@@ -7,10 +7,7 @@ import ar.edu.unlam.tpi.budgets.dto.response.BudgetDetailResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDto;
 import ar.edu.unlam.tpi.budgets.dto.response.BudgetResponseDetailDto;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
-import ar.edu.unlam.tpi.budgets.model.Budget;
-import ar.edu.unlam.tpi.budgets.model.BudgetDetail;
-import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
-import ar.edu.unlam.tpi.budgets.model.enums.BudgetState;
+import ar.edu.unlam.tpi.budgets.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +71,7 @@ public class BudgetDataHelper {
                 .id(id)
                 .applicantId(applicantId)
                 .applicantName(applicantName)
-                .state(BudgetState.INITIATED)
+                .state(BudgetRequestState.INITIATED)
                 .isRead(false)
                 .category("CONTRATISTA")
                 .budgetDetail(BudgetDetail.builder()
