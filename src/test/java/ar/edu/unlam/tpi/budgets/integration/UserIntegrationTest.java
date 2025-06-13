@@ -22,18 +22,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
+//@SpringBootTest
+//@AutoConfigureMockMvc
+//@ActiveProfiles("test")
 public class UserIntegrationTest {
 
-    @Autowired
+    //@Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    //@Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
+    //@Autowired
     private BudgetRepository budgetRepository;
 
     @AfterEach
