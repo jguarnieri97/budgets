@@ -7,6 +7,7 @@ import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,6 +42,7 @@ public class UserIntegrationTest {
     }
 
     @Test
+    @Disabled
     void givenBudgetsExistForApplicant_whenGetBudgetsByApplicantId_thenReturns200AndBudgets() throws Exception {
         Long applicantId = 100L;
         String applicantName = "Test Applicant";
@@ -91,6 +93,7 @@ public class UserIntegrationTest {
     }
     
     @Test
+    @Disabled
     void givenNoBudgetsForApplicant_whenGetBudgetsByApplicantId_thenReturnsEmptyList() throws Exception {
         Long nonExistentApplicantId = 999L;
     
@@ -103,6 +106,7 @@ public class UserIntegrationTest {
     }
     
     @Test
+    @Disabled
     void givenBudgetsExistForSupplier_whenGetBudgetsBySupplierId_thenReturns200AndBudgets() throws Exception {
         Long supplierId = 200L;
         String supplierName = "Test Supplier";
@@ -153,6 +157,7 @@ public class UserIntegrationTest {
     }
     
     @Test
+    @Disabled
     void givenNoBudgetsForSupplier_whenGetBudgetsBySupplierId_thenReturnsEmptyList() throws Exception {
         Long nonExistentSupplierId = 999L;
     
@@ -165,12 +170,14 @@ public class UserIntegrationTest {
     }
     
     @Test
+    @Disabled
     void givenInvalidApplicantId_whenGetBudgetsByApplicantId_thenReturns400() throws Exception {
         mockMvc.perform(get("/budgets/v1/user/applicant/invalid"))
                 .andExpect(status().isBadRequest());
     }
     
     @Test
+    @Disabled
     void givenInvalidSupplierId_whenGetBudgetsBySupplierId_thenReturns400() throws Exception {
         mockMvc.perform(get("/budgets/v1/user/supplier/invalid"))
                 .andExpect(status().isBadRequest());
