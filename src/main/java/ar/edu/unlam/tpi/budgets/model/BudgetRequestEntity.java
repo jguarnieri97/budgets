@@ -1,33 +1,49 @@
 package ar.edu.unlam.tpi.budgets.model;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Entity
+@Table(name = "BUDGET_REQUEST", schema = "BUDGETS")
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 @Builder
-@Document(collection = "budgets")
 public class BudgetRequestEntity {
 
     @Id
-    private String id;
+    private Long id;
+
+    @Column(name = "budget_number")
     private String budgetNumber;
+
+    @Column(name = "is_read")
     private Boolean isRead;
 
-    @NotNull(message = "El ID del solicitante no puede ser nulo")
-    private Long applicantId;
-    
-    private String applicantName;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "applicant_id")
+    private ApplicantEntity applicantEntity;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    private String category;
+
+    private CategoryType category;
+
     private BudgetRequestState state;
+
+    @ElementCollection
+    @CollectionTable(name = "budget_files", schema = "BUDGETS", joinColumns = @JoinColumn(name = "request_id"))
+    @Column(name = "file_id")
     private List<String> files;
+
+    @Embedded
     private BudgetDetail budgetDetail;
+
+    @OneToMany(mappedBy = "budgetRequestEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Budget> budgets;
 
 }

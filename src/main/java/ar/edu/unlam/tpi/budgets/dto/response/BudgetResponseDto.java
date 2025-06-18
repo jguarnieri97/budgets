@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class BudgetResponseDto {
 
-    private String id;
+    private Long id;
     private String budgetNumber;
     private Long applicantId;
     private String applicantName;

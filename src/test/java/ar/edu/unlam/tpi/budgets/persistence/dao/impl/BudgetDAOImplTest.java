@@ -4,6 +4,7 @@ import ar.edu.unlam.tpi.budgets.exceptions.InternalException;
 import ar.edu.unlam.tpi.budgets.exceptions.NotFoundException;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.persistence.repository.BudgetRepository;
+import ar.edu.unlam.tpi.budgets.utils.BudgetRequestEntityHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,9 @@ public class BudgetDAOImplTest {
 
     @InjectMocks
     private BudgetDAOImpl budgetDAO;
+
+    public static final Long BUDGET_ID = 1L;
+
 
     @Test
     void givenRepositoryReturnsList_whenFindAll_thenReturnSameList() {
@@ -50,12 +54,11 @@ public class BudgetDAOImplTest {
     @Test
     void givenValidId_whenFindById_thenReturnEntity() {
         // Given
-        String id = "123";
-        BudgetRequestEntity expected = BudgetRequestEntity.builder().id(id).build();
-        given(repository.findById(id)).willReturn(Optional.of(expected));
+        BudgetRequestEntity expected = BudgetRequestEntity.builder().id(BUDGET_ID).build();
+        given(repository.findById(BUDGET_ID)).willReturn(Optional.of(expected));
 
         // When
-        BudgetRequestEntity result = budgetDAO.findById(id);
+        BudgetRequestEntity result = budgetDAO.findById(BUDGET_ID);
 
         // Then
         assertEquals(expected, result);
@@ -64,27 +67,25 @@ public class BudgetDAOImplTest {
     @Test
     void givenNonexistentId_whenFindById_thenThrowNotFoundException() {
         // Given
-        String id = "999";
-        given(repository.findById(id)).willReturn(Optional.empty());
+        given(repository.findById(BUDGET_ID)).willReturn(Optional.empty());
 
         // When / Then
-        assertThrows(NotFoundException.class, () -> budgetDAO.findById(id));
+        assertThrows(NotFoundException.class, () -> budgetDAO.findById(BUDGET_ID));
     }
 
     @Test
     void givenRepositoryThrowsException_whenFindById_thenThrowInternalException() {
         // Given
-        String id = "error-id";
-        given(repository.findById(id)).willThrow(new RuntimeException("Database down"));
+        given(repository.findById(BUDGET_ID)).willThrow(new RuntimeException("Database down"));
 
         // When / Then
-        assertThrows(InternalException.class, () -> budgetDAO.findById(id));
+        assertThrows(InternalException.class, () -> budgetDAO.findById(BUDGET_ID));
     }
 
     @Test
     void givenValidEntity_whenSave_thenReturnSavedEntity() {
         // Given
-        BudgetRequestEntity entity = BudgetRequestEntity.builder().id("123").build();
+        BudgetRequestEntity entity = BudgetRequestEntity.builder().id(BUDGET_ID).build();
         given(repository.save(entity)).willReturn(entity);
 
         // When
@@ -97,7 +98,7 @@ public class BudgetDAOImplTest {
     @Test
     void givenRepositoryThrowsException_whenSave_thenThrowInternalException() {
         // Given
-        BudgetRequestEntity entity = BudgetRequestEntity.builder().id("123").build();
+        BudgetRequestEntity entity = BudgetRequestEntity.builder().id(BUDGET_ID).build();
         given(repository.save(entity)).willThrow(new RuntimeException("Write failed"));
 
         // When / Then
@@ -106,29 +107,24 @@ public class BudgetDAOImplTest {
 
     @Test
     void givenValidId_whenDelete_thenNoExceptionThrown() {
-        // Given
-        String id = "123";
-
         // When / Then
-        assertDoesNotThrow(() -> budgetDAO.delete(id));
-        then(repository).should().deleteById(id);
+        assertDoesNotThrow(() -> budgetDAO.delete(BUDGET_ID));
+        then(repository).should().deleteById(BUDGET_ID);
     }
 
     @Test
     void givenRepositoryThrowsException_whenDelete_thenThrowInternalException() {
-        // Given
-        String id = "fail-id";
-        willThrow(new RuntimeException("Delete failed")).given(repository).deleteById(id);
+        willThrow(new RuntimeException("Delete failed")).given(repository).deleteById(BUDGET_ID);
 
         // When / Then
-        assertThrows(InternalException.class, () -> budgetDAO.delete(id));
+        assertThrows(InternalException.class, () -> budgetDAO.delete(BUDGET_ID));
     }
 
     @Test
     void givenValidApplicantId_whenFindByApplicantId_thenReturnList() {
         // Given
         Long applicantId = 1L;
-        List<BudgetRequestEntity> expected = List.of(BudgetRequestEntity.builder().applicantId(applicantId).build());
+        List<BudgetRequestEntity> expected = List.of(BudgetRequestEntityHelper.getBudgetRequestEntity(BUDGET_ID));
         given(repository.findByApplicantId(applicantId)).willReturn(expected);
 
         // When

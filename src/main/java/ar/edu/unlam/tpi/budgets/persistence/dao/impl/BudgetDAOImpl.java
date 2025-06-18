@@ -28,7 +28,7 @@ public class BudgetDAOImpl implements BudgetDAO {
     }
 
     @Override
-    public BudgetRequestEntity findById(String id) {
+    public BudgetRequestEntity findById(Long id) {
         try {
             return repository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Budget request not found"));
@@ -49,7 +49,7 @@ public class BudgetDAOImpl implements BudgetDAO {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(Long id) {
         try {
             repository.deleteById(id);
         } catch (Exception e) {

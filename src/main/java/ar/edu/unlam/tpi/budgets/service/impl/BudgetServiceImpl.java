@@ -67,7 +67,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public BudgetResponseDetailDto getBudgetDetailById(String budgetId) {
+    public BudgetResponseDetailDto getBudgetDetailById(Long budgetId) {
         log.info("Buscando detalle de presupuesto con ID {}", budgetId);
 
         try {
@@ -81,7 +81,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
+    public void finalizeBudgetRequest(Long budgetId, BudgetFinalizeRequestDto request) {
         BudgetRequestEntity entity = budgetDAO.findById(budgetId);
 
         log.info("Validando proveedor contratado");
@@ -92,7 +92,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void finalizeRequestOnly(String id) {
+    public void finalizeRequestOnly(Long id) {
         BudgetRequestEntity entity = budgetDAO.findById(id);
         log.info("Finalizando presupuesto con ID {}", id);
         entity.setState(BudgetRequestState.FINALIZED);
@@ -100,7 +100,7 @@ public class BudgetServiceImpl implements BudgetService {
         budgetDAO.save(entity);
     }
 
-    public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {   
+    public void update(Long id, Long providerId,  BudgetUpdateDataRequestDto request) {
 
         BudgetRequestEntity existingBudget = updateFieldsOfBudget(budgetDAO.findById(id), request, providerId);
         log.info("Actualizando presupuesto con ID {}", id);
@@ -112,7 +112,7 @@ public class BudgetServiceImpl implements BudgetService {
     private BudgetRequestEntity updateFieldsOfBudget(BudgetRequestEntity existingBudget, BudgetUpdateDataRequestDto request, Long providerId) {
     
         existingBudget.getBudgets().stream()
-            .filter(b -> b.getSupplierId().equals(providerId))
+            .filter(b -> b.getSupplierEntity().getId().equals(providerId))
             .findFirst()
             .ifPresentOrElse(budget -> {
                 budget.setState(BudgetState.ACCEPTED);

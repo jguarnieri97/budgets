@@ -27,13 +27,16 @@ public class UserControllerImplTest {
     @InjectMocks
     private UserControllerImpl userController;
 
+    public static final Long BUDGET_ID_1 = 1L;
+    public static final Long BUDGET_ID_2 = 2L;
+
     @Test
     void givenApplicantId_whenGetBudgetsByApplicantId_thenReturnGenericResponse() {
         // Arrange
         Long applicantId = 1L;
         List<BudgetResponseDto> expectedList = List.of(
-            BudgetDataHelper.budgetRequest("id1"),
-            BudgetDataHelper.budgetRequest("id2")
+            BudgetDataHelper.budgetRequest(BUDGET_ID_1),
+            BudgetDataHelper.budgetRequest(BUDGET_ID_2)
         );
 
         when(budgetService.getBudgetsByApplicantId(applicantId)).thenReturn(expectedList);
@@ -53,8 +56,8 @@ public class UserControllerImplTest {
         // Given
         Long supplierId = 1L;
         List<BudgetSupplierResponseDto> expectedList = List.of(
-                BudgetDataHelper.createBudgetSupplierResponse("id1"),
-                BudgetDataHelper.createBudgetSupplierResponse("id2")
+                BudgetDataHelper.createBudgetSupplierResponse(BUDGET_ID_1),
+                BudgetDataHelper.createBudgetSupplierResponse(BUDGET_ID_2)
         );
 
         when(budgetService.getBudgetsBySupplierId(supplierId)).thenReturn(expectedList);

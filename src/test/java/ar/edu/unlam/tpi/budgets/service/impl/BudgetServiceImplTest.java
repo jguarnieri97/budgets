@@ -48,6 +48,9 @@ public class BudgetServiceImplTest {
     @InjectMocks
     private BudgetServiceImpl budgetService;
 
+    public static final Long BUDGET_ID = 1L;
+
+
     @Test
     public void givenValidRequest_whenCreate_thenReturnResponse() {
         // Arrange
@@ -57,8 +60,8 @@ public class BudgetServiceImplTest {
                         BudgetDataHelper.supplier(10L, "Proveedor A"),
                         BudgetDataHelper.supplier(11L, "Proveedor B")));
 
-        BudgetRequestEntity entity = BudgetDataHelper.createBudgetRequestEntity("abc123", 1L, "Juan Pérez");
-        BudgetCreationResponseDto expectedResponse = BudgetCreationResponseDto.builder().id("abc123").build();
+        BudgetRequestEntity entity = BudgetDataHelper.createBudgetRequestEntity(BUDGET_ID, 1L, "Juan Pérez");
+        BudgetCreationResponseDto expectedResponse = BudgetCreationResponseDto.builder().id(BUDGET_ID).build();
 
         when(budgetDAO.save(any(BudgetRequestEntity.class))).thenReturn(entity);
         when(budgetCreationResponseBuilder.build(entity)).thenReturn(expectedResponse);
@@ -68,15 +71,15 @@ public class BudgetServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals("abc123", result.getId());
+        assertEquals(BUDGET_ID, result.getId());
     }
 
     @Test
     public void givenApplicantId_whenGetBudgets_thenReturnList() {
         // Arrange
         List<BudgetRequestEntity> entities = List.of(
-                BudgetDataHelper.createBudgetRequestEntity("id1", 1L, "Juan"),
-                BudgetDataHelper.createBudgetRequestEntity("id2", 1L, "Juan"));
+                BudgetDataHelper.createBudgetRequestEntity(BUDGET_ID, 1L, "Juan"),
+                BudgetDataHelper.createBudgetRequestEntity(BUDGET_ID, 1L, "Juan"));
 
         when(budgetDAO.findByApplicantId(1L)).thenReturn(entities);
 
@@ -91,46 +94,44 @@ public class BudgetServiceImplTest {
     @Test
     public void givenBudgetId_whenGetDetail_thenReturnBudgetResponseDto() {
         // Arrange
-        String id = "abc123";
-        BudgetRequestEntity entity = BudgetDataHelper.createBudgetRequestEntity(id, 1L, "Logibyte");
+        BudgetRequestEntity entity = BudgetDataHelper.createBudgetRequestEntity(BUDGET_ID, 1L, "Logibyte");
 
-        when(budgetDAO.findById(id)).thenReturn(entity);
+        when(budgetDAO.findById(BUDGET_ID)).thenReturn(entity);
 
         // Act
-        BudgetResponseDetailDto result = budgetService.getBudgetDetailById(id);
+        BudgetResponseDetailDto result = budgetService.getBudgetDetailById(BUDGET_ID);
 
         // Assert
         assertNotNull(result);
-        assertEquals(id, result.getId());
+        assertEquals(BUDGET_ID, result.getId());
     }
 
     @Test
     public void givenValidUpdateRequest_whenUpdate_thenUpdateBudget() {
         // Arrange
-        String budgetId = "abc123";
         Long providerId = 1L;
         BudgetUpdateDataRequestDto updateRequest = BudgetUpdatedDataRequestHelper.getBudgetUpdateDataRequestDto();
 
         // Create a budget with multiple providers using ArrayList for mutability
         List<Budget> budgets = BudgetDataHelper.getListOfBudgets();
 
-        BudgetRequestEntity existingBudget = BudgetRequestEntityHelper.getBudgetRequestEntity(budgetId, budgets);
+        BudgetRequestEntity existingBudget = BudgetRequestEntityHelper.getBudgetRequestEntity(BUDGET_ID, budgets);
 
-        when(budgetDAO.findById(budgetId)).thenReturn(existingBudget);
+        when(budgetDAO.findById(BUDGET_ID)).thenReturn(existingBudget);
         when(budgetDAO.save(any(BudgetRequestEntity.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        budgetService.update(budgetId, providerId, updateRequest);
+        budgetService.update(BUDGET_ID, providerId, updateRequest);
 
         // Assert
-        verify(budgetDAO).findById(budgetId);
+        verify(budgetDAO).findById(BUDGET_ID);
         verify(budgetDAO).save(argThat(savedBudget -> {
             // Verify only one budget remains (the updated one)
             assertEquals(2, savedBudget.getBudgets().size());
             
             // Verify the updated budget has the correct values
             Budget updatedBudget = savedBudget.getBudgets().get(0);
-            assertEquals(providerId, updatedBudget.getSupplierId());
+            assertEquals(providerId, updatedBudget.getSupplierEntity().getId());
             assertEquals(BudgetState.ACCEPTED, updatedBudget.getState());
             assertEquals(updateRequest.getPrice(), updatedBudget.getPrice());
             assertEquals(updateRequest.getDaysCount(), updatedBudget.getDaysCount());
@@ -144,20 +145,19 @@ public class BudgetServiceImplTest {
     @Test
     public void givenNonExistentProvider_whenUpdate_thenThrowException() {
         // Arrange
-        String budgetId = "abc123";
         Long nonExistentProviderId = 999L;
         BudgetUpdateDataRequestDto updateRequest = BudgetUpdatedDataRequestHelper.getBudgetUpdateDataRequestDto();
 
         // Create a budget with a single provider using ArrayList for mutability
         List<Budget> budgets = BudgetDataHelper.getOnlyBudget();
 
-        BudgetRequestEntity existingBudget = BudgetRequestEntityHelper.getBudgetRequestEntity(budgetId, budgets);
+        BudgetRequestEntity existingBudget = BudgetRequestEntityHelper.getBudgetRequestEntity(BUDGET_ID, budgets);
 
-        when(budgetDAO.findById(budgetId)).thenReturn(existingBudget);
+        when(budgetDAO.findById(BUDGET_ID)).thenReturn(existingBudget);
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> 
-            budgetService.update(budgetId, nonExistentProviderId, updateRequest)
+            budgetService.update(BUDGET_ID, nonExistentProviderId, updateRequest)
         );
         assertEquals("No se encontró el proveedor con ID: " + nonExistentProviderId, exception.getMessage());
     }
@@ -165,14 +165,13 @@ public class BudgetServiceImplTest {
     @Test
     void givenValidBudgetIdAndRequest_whenFinalizeBudgetRequest_thenValidatorAndSaveAreCalled() {
         // Given
-        String budgetId = "budget123";
         BudgetRequestEntity mockEntity = BudgetRequestEntity.builder().build();
         BudgetFinalizeRequestDto requestDto = BudgetFinalizeRequestDto.builder().build();
 
-        given(budgetDAO.findById(budgetId)).willReturn(mockEntity);
+        given(budgetDAO.findById(BUDGET_ID)).willReturn(mockEntity);
 
         // When
-        budgetService.finalizeBudgetRequest(budgetId, requestDto);
+        budgetService.finalizeBudgetRequest(BUDGET_ID, requestDto);
 
         // Then
         then(budgetValidator).should().validateSupplierHired(mockEntity, requestDto);
@@ -182,12 +181,11 @@ public class BudgetServiceImplTest {
     @Test
     void givenExistingBudgetId_whenFinalizeRequestOnly_thenStateIsFinalizedAndSaved() {
         // Given
-        String budgetId = "budget456";
         BudgetRequestEntity mockEntity = BudgetRequestEntity.builder().build();
-        given(budgetDAO.findById(budgetId)).willReturn(mockEntity);
+        given(budgetDAO.findById(BUDGET_ID)).willReturn(mockEntity);
 
         // When
-        budgetService.finalizeRequestOnly(budgetId);
+        budgetService.finalizeRequestOnly(BUDGET_ID);
 
         // Then
         assertEquals(BudgetRequestState.FINALIZED, mockEntity.getState());
@@ -198,17 +196,16 @@ public class BudgetServiceImplTest {
     @Test
 void givenValidId_whenFinalizeRequestOnly_thenStateIsUpdatedToFinalized() {
     // Given
-    String budgetId = "123";
-    BudgetRequestEntity entity = BudgetRequestEntity.builder().id(budgetId).state(BudgetRequestState.FINALIZED).build();
+    BudgetRequestEntity entity = BudgetRequestEntity.builder().id(BUDGET_ID).state(BudgetRequestState.FINALIZED).build();
 
-    when(budgetDAO.findById(budgetId)).thenReturn(entity);
+    when(budgetDAO.findById(BUDGET_ID)).thenReturn(entity);
 
     // When
-    budgetService.finalizeRequestOnly(budgetId);
+    budgetService.finalizeRequestOnly(BUDGET_ID);
 
     // Then
     assertEquals(BudgetRequestState.FINALIZED, entity.getState());
-    verify(budgetDAO).findById(budgetId);
+    verify(budgetDAO).findById(BUDGET_ID);
     verify(budgetDAO).save(entity);
 }
 

@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class BudgetControllerImplTest {
 
+    public static final Long BUDGET_ID = 1L;
     @Mock
     private BudgetService budgetService;
 
@@ -43,9 +44,8 @@ public class BudgetControllerImplTest {
             )
         );
 
-        String fakeId = UUID.randomUUID().toString();
         BudgetCreationResponseDto response = BudgetCreationResponseDto.builder()
-            .id(fakeId)
+            .id(BUDGET_ID)
             .build();
 
         when(budgetService.create(request)).thenReturn(response);
@@ -57,19 +57,18 @@ public class BudgetControllerImplTest {
         assertNotNull(result);
         assertEquals(Constants.STATUS_OK, result.getCode());
         assertEquals(Constants.SUCCESS_MESSAGE, result.getMessage());
-        assertEquals(fakeId, result.getData().getId());
+        assertEquals(BUDGET_ID, result.getData().getId());
     }
 
     @Test
     void givenBudgetId_whenGetBudgetDetail_thenReturnGenericResponse() {
         // Arrange
-        String id = "abc123";
-        BudgetResponseDetailDto responseDto = BudgetDataHelper.createBudgetResponse(id);
+        BudgetResponseDetailDto responseDto = BudgetDataHelper.createBudgetResponse(BUDGET_ID);
 
-        when(budgetService.getBudgetDetailById(id)).thenReturn(responseDto);
+        when(budgetService.getBudgetDetailById(BUDGET_ID)).thenReturn(responseDto);
 
         // Act
-        GenericResponse<BudgetResponseDetailDto> result = budgetController.getBudgetDetailById(id);
+        GenericResponse<BudgetResponseDetailDto> result = budgetController.getBudgetDetailById(BUDGET_ID);
 
         // Assert
         assertNotNull(result);
@@ -81,7 +80,7 @@ public class BudgetControllerImplTest {
     @Test
     void givenValidData_whenUpdateBudget_thenReturnSuccessResponse() {
         // Given
-        String budgetId = "budget123";
+        Long budgetId = 1L;
         Long providerId = 1L;
         BudgetUpdateDataRequestDto request = BudgetUpdatedDataRequestHelper.getBudgetUpdateDataRequestDto();
 
@@ -98,13 +97,12 @@ public class BudgetControllerImplTest {
     @Test
     void givenValidData_whenFinalizeBudgetRequest_thenReturnSuccessResponse() {
         // Given
-        String budgetId = "budget123";
         BudgetFinalizeRequestDto request = BudgetFinalizeRequestDto.builder()
                 .supplierHired(1L)
                 .build();
 
         // When
-        GenericResponse<Void> response = budgetController.finalizeBudgetRequest(budgetId, request);
+        GenericResponse<Void> response = budgetController.finalizeBudgetRequest(BUDGET_ID, request);
 
         // Then
         assertNotNull(response, "La respuesta no debería ser nula");
@@ -115,17 +113,14 @@ public class BudgetControllerImplTest {
 
     @Test
     void givenValidId_whenFinalizeRequestOnly_thenReturnSuccessResponse() {
-        // Given
-        String budgetId = "budget123";
-
         // When
-        GenericResponse<Void> response = budgetController.finalizeRequestOnly(budgetId);
+        GenericResponse<Void> response = budgetController.finalizeRequestOnly(BUDGET_ID);
 
         // Then
         assertNotNull(response, "La respuesta no debería ser nula");
         assertEquals(Constants.STATUS_OK, response.getCode(), "El código de estado debería ser 200");
         assertEquals(Constants.UPDATED_MESSAGE, response.getMessage(), "El mensaje debería indicar actualización exitosa");
         assertNull(response.getData(), "No debería haber datos en la respuesta");
-        verify(budgetService).finalizeRequestOnly(budgetId);
+        verify(budgetService).finalizeRequestOnly(BUDGET_ID);
     }
 }

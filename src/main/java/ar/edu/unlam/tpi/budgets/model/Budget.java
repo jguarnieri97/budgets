@@ -1,19 +1,42 @@
 package ar.edu.unlam.tpi.budgets.model;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+@Entity
+@Table(name = "BUDGET", schema = "BUDGETS")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 @Builder
 public class Budget {
 
-    private Long supplierId;
-    private String supplierName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "supplier_id", nullable = false)
+    private SupplierEntity supplierEntity;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "request_id", nullable = false)
+    private BudgetRequestEntity budgetRequestEntity;
+
     private Float price;
+
+    @Column(name = "days_count")
     private Integer daysCount;
+
+    @Column(name = "worker_count")
     private Integer workerCount;
+
     private String detail;
+
     private BudgetState state;
+
     private Boolean hired;
 
 }

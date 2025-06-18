@@ -20,7 +20,7 @@ public class BudgetControllerImpl implements BudgetController {
     private final BudgetService budgetService;
 
     @Override
-    public GenericResponse<BudgetResponseDetailDto> getBudgetDetailById(String budgetId) {
+    public GenericResponse<BudgetResponseDetailDto> getBudgetDetailById(Long budgetId) {
         BudgetResponseDetailDto budget = budgetService.getBudgetDetailById(budgetId);
         return new GenericResponse<>(
                 Constants.STATUS_OK,
@@ -39,7 +39,7 @@ public class BudgetControllerImpl implements BudgetController {
     }
 
     @Override
-    public GenericResponse<Void> updateBudget(String id, Long providerId, BudgetUpdateDataRequestDto request) {
+    public GenericResponse<Void> updateBudget(Long id, Long providerId, BudgetUpdateDataRequestDto request) {
         budgetService.update(id,providerId,request);
         return new GenericResponse<>(
                 Constants.STATUS_OK,
@@ -48,13 +48,13 @@ public class BudgetControllerImpl implements BudgetController {
     }
 
     @Override
-    public GenericResponse<Void> finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
+    public GenericResponse<Void> finalizeBudgetRequest(Long budgetId, BudgetFinalizeRequestDto request) {
         budgetService.finalizeBudgetRequest(budgetId, request);
         return new GenericResponse<>(Constants.STATUS_OK, Constants.UPDATED_MESSAGE, null);
     }
 
     @Override
-    public GenericResponse<Void> finalizeRequestOnly(String id) {
+    public GenericResponse<Void> finalizeRequestOnly(Long id) {
         budgetService.finalizeRequestOnly(id);
         return new GenericResponse<>(Constants.STATUS_OK, Constants.UPDATED_MESSAGE, null);
     }
