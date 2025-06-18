@@ -8,7 +8,6 @@ import lombok.Data;
 public class BudgetSupplierResponseDto {
     private Long id; // ID de la solicitud de presupuesto (BudgetRequestEntity)
     private String budgetNumber;
-    private Boolean isRead;
     private Long applicantId;
     private String applicantName;
     private String category;

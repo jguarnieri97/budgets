@@ -1,55 +1,49 @@
 package ar.edu.unlam.tpi.budgets.utils;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.SupplierDataRequest;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
 import ar.edu.unlam.tpi.budgets.model.*;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
 public class Converter {
 
     
-    public static BudgetRequestEntity toBudgetRequest(BudgetCreationRequestDto request) {
-        BudgetDetail detail = BudgetDetail.builder()
+    public static BudgetRequestEntity toBudgetRequest(BudgetCreationRequestDto request, String budgetNumber) {
+        var detail = BudgetDetail.builder()
                 .workResume(request.getWorkResume())
                 .workDetail(request.getWorkDetail())
                 .build();
 
         List<Budget> budgets = request.getSuppliers().stream()
-                .map(data -> Budget.builder()
-                        .supplierEntity(SupplierEntity.builder()
-                                .id(data.getSupplierId())
-                                .name(data.getSupplierName())
-                                .build())
-                        .hired(false)
-                        .state(BudgetState.PENDING)
-                        .build())
+                .map(Converter::buildBudget)
                 .collect(Collectors.toList());
 
-        return BudgetRequestEntity.builder()
-                .applicantEntity(ApplicantEntity.builder()
-                        .id(request.getApplicantId())
-                        .name(request.getApplicantName())
-                        .build())
-                .budgetNumber(formatBuildNumber(new Random().nextInt(1000000), 7)) // Genera un número único basado en UUID
-                .createdAt(LocalDateTime.now())
-                .state(BudgetRequestState.INITIATED)
-                .isRead(false)
-                .category(CategoryType.valueOf(request.getCategory()))
-                .files(request.getFiles())
-                .budgetDetail(detail)
-                .budgets(budgets)
+        var applicant = ApplicantEntity.builder()
+                .id(request.getApplicantId())
+                .name(request.getApplicantName())
                 .build();
+
+        var entity = new BudgetRequestEntity(budgetNumber, applicant,
+                CategoryType.valueOf(request.getCategory()), request.getFiles(), detail, budgets);
+
+        budgets.forEach(budget -> budget.setBudgetRequestEntity(entity));
+
+        return entity;
     }
 
-    public static String formatBuildNumber(int buildNumber, int minDigits) {
-        return String.format("%0" + minDigits + "d", buildNumber);
-    }
+   private static Budget buildBudget(SupplierDataRequest request) {
+       var supplier = SupplierEntity.builder()
+               .id(request.getSupplierId())
+               .name(request.getSupplierName())
+               .build();
+
+       return new Budget(supplier);
+   }
 
     public static BudgetResponseDto toBudgetRequestResponse(BudgetRequestEntity budget) {
         if (budget == null) {
@@ -62,7 +56,6 @@ public class Converter {
                 .applicantName(budget.getApplicantEntity().getName())
                 .category(budget.getCategory().toString())
                 .state(budget.getState().name())
-                .isRead(budget.getIsRead())
                 .date(DateTimeUtils.toString(budget.getCreatedAt()))
                 .build();
     }
@@ -85,7 +78,6 @@ public class Converter {
                 .files(entity.getFiles())
                 .detail(toBudgetDetailResponse(entity.getBudgetDetail()))
                 .state(entity.getState().name())
-                .isRead(entity.getIsRead())
                 .category(entity.getCategory().toString())
                 .budgetNumber(entity.getBudgetNumber())
                 .budgets(toBudgetDataResponseList(entity.getBudgets()))
@@ -121,7 +113,6 @@ public class Converter {
                 .map(b -> BudgetSupplierResponseDto.builder()
                     .id(request.getId()) //ID de la solicitud
                     .budgetNumber(request.getBudgetNumber())
-                    .isRead(request.getIsRead())
                     .applicantId(request.getApplicantEntity().getId())
                     .applicantName(request.getApplicantEntity().getName())
                     .category(request.getCategory().toString())

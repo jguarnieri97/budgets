@@ -11,6 +11,7 @@ import ar.edu.unlam.tpi.budgets.model.BudgetRequestEntity;
 import ar.edu.unlam.tpi.budgets.model.BudgetRequestState;
 import ar.edu.unlam.tpi.budgets.model.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
+import ar.edu.unlam.tpi.budgets.service.CodeNumberGenerator;
 import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
 import ar.edu.unlam.tpi.budgets.utils.BudgetDataHelper;
 import ar.edu.unlam.tpi.budgets.utils.BudgetRequestEntityHelper;
@@ -45,6 +46,9 @@ public class BudgetServiceImplTest {
     @Mock
     private BudgetValidator budgetValidator;
 
+    @Mock
+    private CodeNumberGenerator codeNumberGenerator;
+
     @InjectMocks
     private BudgetServiceImpl budgetService;
 
@@ -65,6 +69,7 @@ public class BudgetServiceImplTest {
 
         when(budgetDAO.save(any(BudgetRequestEntity.class))).thenReturn(entity);
         when(budgetCreationResponseBuilder.build(entity)).thenReturn(expectedResponse);
+        when(codeNumberGenerator.generateCodeNumber()).thenReturn("0001");
 
         // Act
         BudgetCreationResponseDto result = budgetService.create(request);

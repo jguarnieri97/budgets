@@ -163,16 +163,16 @@ VALUES ('rrhh@byteflow.io', 'ByteFlow', '1144556677', 'Av. Illia 2900, San Justo
 
 -- PRESUPUESTOS --
 INSERT INTO BUDGETS.BUDGET_REQUEST
-(budget_number, is_read, applicant_id, created_at, updated_at, category, state, work_resume, work_detail)
-VALUES (NEXT VALUE FOR budget_sequence, FALSE, 1, '2025-05-22', '2025-05-23', 4, 2, 'Resumen del trabajo 1',
+(budget_number, applicant_id, created_at, updated_at, category, state, work_resume, work_detail)
+VALUES (NEXT VALUE FOR budget_sequence, 1, '2025-05-22', '2025-05-23', 1, 1, 'Resumen del trabajo 1',
         'Detalle completo del trabajo 1'),
-       (NEXT VALUE FOR budget_sequence, FALSE, 1, '2025-06-13', '2025-06-18', 5, 1, 'Resumen del trabajo 2',
+       (NEXT VALUE FOR budget_sequence, 1, '2025-06-13', '2025-06-18', 1, 1, 'Resumen del trabajo 2',
         'Detalle completo del trabajo 2'),
-       (NEXT VALUE FOR budget_sequence, FALSE, 1, '2025-05-25', '2025-05-28', 1, 0, 'Resumen del trabajo 3',
+       (NEXT VALUE FOR budget_sequence, 1, '2025-05-25', '2025-05-28', 1, 0, 'Resumen del trabajo 3',
         'Detalle completo del trabajo 3');
 
 INSERT INTO BUDGETS.BUDGET
 (supplier_id, request_id, price, days_count, worker_count, detail, state, hired)
 VALUES (1, 1, 170502.07, 2, 1, 'Presupuesto detallado del proveedor 1', 2, FALSE),
-       (1, 2, 88895.80, 1, 2, 'Presupuesto detallado del proveedor 2', 0, FALSE),
-       (1, 3, 200329.02, 3, 1, 'Presupuesto detallado del proveedor 3', 1, TRUE);
+       (1, 2, 0, 1, 2, 'Presupuesto detallado del proveedor 2', 0, FALSE),
+       (1, 3, 200329.02, 3, 1, 'Presupuesto detallado del proveedor 3', 2, TRUE);

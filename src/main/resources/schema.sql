@@ -59,7 +59,6 @@ CREATE TABLE BUDGETS.BUDGET_REQUEST
 (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     budget_number VARCHAR(50) NOT NULL,
-    is_read       BOOLEAN     NOT NULL,
     applicant_id  BIGINT      NOT NULL,
     created_at    DATE        NOT NULL,
     updated_at    DATE        NOT NULL,
@@ -75,12 +74,19 @@ CREATE TABLE BUDGETS.BUDGET
     id           BIGINT AUTO_INCREMENT PRIMARY KEY,
     supplier_id  BIGINT  NOT NULL,
     request_id   BIGINT  NOT NULL,
-    price        FLOAT   NOT NULL,
-    days_count   INT     NOT NULL,
-    worker_count INT     NOT NULL,
+    price        FLOAT,
+    days_count   INT,
+    worker_count INT,
     detail       VARCHAR(250),
     state        INT     NOT NULL,
     hired        BOOLEAN NOT NULL,
     FOREIGN KEY (supplier_id) REFERENCES USERS.SUPPLIER_COMPANY (id),
+    FOREIGN KEY (request_id) REFERENCES BUDGETS.BUDGET_REQUEST (id)
+);
+
+CREATE TABLE BUDGETS.BUDGET_FILES
+(
+    file_data  BLOB   NOT NULL,
+    request_id BIGINT NOT NULL,
     FOREIGN KEY (request_id) REFERENCES BUDGETS.BUDGET_REQUEST (id)
 );

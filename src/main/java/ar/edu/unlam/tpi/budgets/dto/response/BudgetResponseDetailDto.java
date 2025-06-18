@@ -11,7 +11,6 @@ public class BudgetResponseDetailDto {
 
     private Long id;
     private String budgetNumber;
-    private Boolean isRead;
     private Long applicantId;
     private String applicantName;
     private String category;

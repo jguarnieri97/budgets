@@ -10,19 +10,16 @@ import java.util.List;
 @Table(name = "BUDGET_REQUEST", schema = "BUDGETS")
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
 @Getter
 @Builder
 public class BudgetRequestEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "budget_number")
     private String budgetNumber;
-
-    @Column(name = "is_read")
-    private Boolean isRead;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "applicant_id")
@@ -31,13 +28,18 @@ public class BudgetRequestEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Setter
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     private CategoryType category;
 
+    @Setter
     private BudgetRequestState state;
 
     @ElementCollection
-    @CollectionTable(name = "budget_files", schema = "BUDGETS", joinColumns = @JoinColumn(name = "request_id"))
-    @Column(name = "file_id")
+    @CollectionTable(name = "BUDGET_FILES", schema = "BUDGETS", joinColumns = @JoinColumn(name = "request_id"))
+    @Column(name = "file_data")
     private List<String> files;
 
     @Embedded
@@ -46,4 +48,15 @@ public class BudgetRequestEntity {
     @OneToMany(mappedBy = "budgetRequestEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Budget> budgets;
 
+    public BudgetRequestEntity(String budgetNumber, ApplicantEntity applicantEntity, CategoryType category, List<String> files, BudgetDetail budgetDetail, List<Budget> budgets) {
+        this.budgetNumber = budgetNumber;
+        this.applicantEntity = applicantEntity;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.category = category;
+        this.state = BudgetRequestState.INITIATED;
+        this.files = files;
+        this.budgetDetail = budgetDetail;
+        this.budgets = budgets;
+    }
 }
