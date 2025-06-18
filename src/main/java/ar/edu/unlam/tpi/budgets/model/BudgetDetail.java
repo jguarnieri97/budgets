@@ -1,10 +1,14 @@
 package ar.edu.unlam.tpi.budgets.model;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.Embeddable;
+import lombok.*;
 
-@Data
+@Embeddable
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BudgetDetail {
 
     private String workResume;

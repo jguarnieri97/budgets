@@ -20,7 +20,7 @@ public interface BudgetController {
         @ResponseStatus(HttpStatus.OK)
         @Operation(summary = "Get budget detail by id")
         GenericResponse<BudgetResponseDetailDto> getBudgetDetailById(
-                        @PathVariable("budgetId") @NotNull String budgetId);
+                        @PathVariable("budgetId") @NotNull Long budgetId);
 
         @PostMapping
         @ResponseStatus(HttpStatus.OK)
@@ -31,18 +31,18 @@ public interface BudgetController {
         @PutMapping("/{id}/user/{providerId}")
         @ResponseStatus(HttpStatus.OK)
         @Operation(summary = "Update budget request")
-        GenericResponse<Void> updateBudget(@PathVariable String id, @PathVariable Long providerId,
+        GenericResponse<Void> updateBudget(@PathVariable Long id, @PathVariable Long providerId,
                         @Valid @RequestBody BudgetUpdateDataRequestDto request);
 
         @PutMapping("/{budgetId}")
         @ResponseStatus(HttpStatus.OK)
         @Operation(summary = "Finalize budget request")
-        GenericResponse<Void> finalizeBudgetRequest(@PathVariable String budgetId,
+        GenericResponse<Void> finalizeBudgetRequest(@PathVariable Long budgetId,
                         @Valid @RequestBody BudgetFinalizeRequestDto request);
 
         @PutMapping("/{id}/finalize-request")
         @ResponseStatus(HttpStatus.OK)
         @Operation(summary = "Finalize budget request")
-        GenericResponse<Void> finalizeRequestOnly(@PathVariable String id);
+        GenericResponse<Void> finalizeRequestOnly(@PathVariable Long id);
 
 }

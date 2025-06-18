@@ -23,11 +23,11 @@ public class BudgetDataHelper {
     }
 
     public static BudgetCreationRequestDto createValidRequest(Long applicantId, String applicantName,
-            List<SupplierDataRequest> suppliers) {
+                                                              List<SupplierDataRequest> suppliers) {
         return BudgetCreationRequestDto.builder()
                 .applicantId(applicantId)
                 .applicantName(applicantName)
-                .category("CONTRATISTA")
+                .category(CategoryType.CONTRACTOR.toString())
                 .workResume("Trabajo test")
                 .workDetail("Detalle test")
                 .files(List.of("file1", "file2"))
@@ -46,7 +46,7 @@ public class BudgetDataHelper {
                 .build();
     }
 
-    public static BudgetResponseDetailDto createBudgetResponse(String id) {
+    public static BudgetResponseDetailDto createBudgetResponse(Long id) {
         return BudgetResponseDetailDto.builder()
                 .id(id)
                 .applicantName("Logibyte")
@@ -66,21 +66,21 @@ public class BudgetDataHelper {
                 .build();
     }
 
-    public static BudgetRequestEntity createBudgetRequestEntity(String id, Long applicantId, String applicantName) {
+    public static BudgetRequestEntity createBudgetRequestEntity(Long id, Long applicantId, String applicantName) {
         return BudgetRequestEntity.builder()
                 .id(id)
-                .applicantId(applicantId)
-                .applicantName(applicantName)
+                .applicantEntity(ApplicantEntity.builder()
+                        .id(applicantId)
+                        .name(applicantName)
+                        .build())
                 .state(BudgetRequestState.INITIATED)
-                .isRead(false)
-                .category("CONTRATISTA")
+                .category(CategoryType.CONTRACTOR)
                 .budgetDetail(BudgetDetail.builder()
                         .workResume("Instalación eléctrica")
                         .workDetail("Se requiere instalación completa en oficina")
                         .build())
                 .budgets(List.of(Budget.builder()
-                        .supplierId(1L)
-                        .supplierName("ElectraSol")
+                        .supplierEntity(SupplierEntity.builder().build())
                         .price(100000f)
                         .daysCount(2)
                         .workerCount(3)
@@ -91,40 +91,45 @@ public class BudgetDataHelper {
                 .build();
     }
 
-    public static BudgetResponseDto budgetRequest(String id) {
+    public static BudgetResponseDto budgetRequest(Long id) {
         return BudgetResponseDto.builder().id(id).build();
     }
-    
-    public static List<Budget> getListOfBudgets(){
+
+    public static List<Budget> getListOfBudgets() {
         return new ArrayList<>(Arrays.asList(
-            Budget.builder()
-                .supplierId(1L)
-                .supplierName("Proveedor A")
-                .state(BudgetState.PENDING)
-                .build(),
-            Budget.builder()
-                .supplierId(2L)
-                .supplierName("Proveedor B")
-                .state(BudgetState.PENDING)
-                .build()
+                Budget.builder()
+                        .supplierEntity(SupplierEntity.builder()
+                                .id(1L)
+                                .name("Proveedor A")
+                                .build())
+                        .state(BudgetState.PENDING)
+                        .build(),
+                Budget.builder()
+                        .supplierEntity(SupplierEntity.builder()
+                                .id(2L)
+                                .name("Proveedor B")
+                                .build())
+                        .state(BudgetState.PENDING)
+                        .build()
         ));
     }
 
-    public static List<Budget> getOnlyBudget(){
+    public static List<Budget> getOnlyBudget() {
         return new ArrayList<>(Arrays.asList(
-            Budget.builder()
-                .supplierId(1L)
-                .supplierName("Proveedor A")
-                .state(BudgetState.PENDING)
-                .build()
+                Budget.builder()
+                        .supplierEntity(SupplierEntity.builder()
+                                .id(1L)
+                                .name("Proveedor A")
+                                .build())
+                        .state(BudgetState.PENDING)
+                        .build()
         ));
     }
 
-    public static BudgetSupplierResponseDto createBudgetSupplierResponse(String id) {
+    public static BudgetSupplierResponseDto createBudgetSupplierResponse(Long id) {
         return BudgetSupplierResponseDto.builder()
                 .id(id)
                 .budgetNumber("BUDGET-" + id)
-                .isRead(false)
                 .applicantId(1L)
                 .applicantName("Solicitante " + id)
                 .category("CONTRATISTA")

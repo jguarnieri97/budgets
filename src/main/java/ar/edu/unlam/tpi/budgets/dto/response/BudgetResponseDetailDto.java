@@ -9,9 +9,8 @@ import java.util.List;
 @Builder
 public class BudgetResponseDetailDto {
 
-    private String id;
+    private Long id;
     private String budgetNumber;
-    private Boolean isRead;
     private Long applicantId;
     private String applicantName;
     private String category;

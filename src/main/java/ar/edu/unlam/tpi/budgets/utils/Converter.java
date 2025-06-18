@@ -1,51 +1,49 @@
 package ar.edu.unlam.tpi.budgets.utils;
 
 import ar.edu.unlam.tpi.budgets.dto.request.BudgetCreationRequestDto;
+import ar.edu.unlam.tpi.budgets.dto.request.SupplierDataRequest;
 import ar.edu.unlam.tpi.budgets.dto.response.*;
 import ar.edu.unlam.tpi.budgets.model.*;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
 public class Converter {
 
     
-    public static BudgetRequestEntity toBudgetRequest(BudgetCreationRequestDto request) {
-        BudgetDetail detail = BudgetDetail.builder()
+    public static BudgetRequestEntity toBudgetRequest(BudgetCreationRequestDto request, String budgetNumber) {
+        var detail = BudgetDetail.builder()
                 .workResume(request.getWorkResume())
                 .workDetail(request.getWorkDetail())
                 .build();
 
         List<Budget> budgets = request.getSuppliers().stream()
-                .map(data -> Budget.builder()
-                        .supplierId(data.getSupplierId())
-                        .supplierName(data.getSupplierName())
-                        .hired(false)
-                        .state(BudgetState.PENDING)
-                        .build())
+                .map(Converter::buildBudget)
                 .collect(Collectors.toList());
 
-        return BudgetRequestEntity.builder()
-                .applicantId(request.getApplicantId())
-                .applicantName(request.getApplicantName())
-                .budgetNumber(formatBuildNumber(new Random().nextInt(1000000), 7)) // Genera un número único basado en UUID
-                .createdAt(LocalDateTime.now())
-                .state(BudgetRequestState.INITIATED)
-                .isRead(false)
-                .category(request.getCategory())
-                .files(request.getFiles())
-                .budgetDetail(detail)
-                .budgets(budgets)
+        var applicant = ApplicantEntity.builder()
+                .id(request.getApplicantId())
+                .name(request.getApplicantName())
                 .build();
+
+        var entity = new BudgetRequestEntity(budgetNumber, applicant,
+                CategoryType.valueOf(request.getCategory()), request.getFiles(), detail, budgets);
+
+        budgets.forEach(budget -> budget.setBudgetRequestEntity(entity));
+
+        return entity;
     }
 
-    public static String formatBuildNumber(int buildNumber, int minDigits) {
-        return String.format("%0" + minDigits + "d", buildNumber);
-    }
+   private static Budget buildBudget(SupplierDataRequest request) {
+       var supplier = SupplierEntity.builder()
+               .id(request.getSupplierId())
+               .name(request.getSupplierName())
+               .build();
+
+       return new Budget(supplier);
+   }
 
     public static BudgetResponseDto toBudgetRequestResponse(BudgetRequestEntity budget) {
         if (budget == null) {
@@ -54,11 +52,10 @@ public class Converter {
         return BudgetResponseDto.builder()
                 .id(budget.getId())
                 .budgetNumber(budget.getBudgetNumber())
-                .applicantId(budget.getApplicantId())
-                .applicantName(budget.getApplicantName())
-                .category(budget.getCategory())
+                .applicantId(budget.getApplicantEntity().getId())
+                .applicantName(budget.getApplicantEntity().getName())
+                .category(budget.getCategory().toString())
                 .state(budget.getState().name())
-                .isRead(budget.getIsRead())
                 .date(DateTimeUtils.toString(budget.getCreatedAt()))
                 .build();
     }
@@ -75,14 +72,13 @@ public class Converter {
         }
         return BudgetResponseDetailDto.builder()
                 .id(entity.getId())
-                .applicantId(entity.getApplicantId())
-                .applicantName(entity.getApplicantName())
+                .applicantId(entity.getApplicantEntity().getId())
+                .applicantName(entity.getApplicantEntity().getName())
                 .createdAt(DateTimeUtils.toString(entity.getCreatedAt()))
                 .files(entity.getFiles())
                 .detail(toBudgetDetailResponse(entity.getBudgetDetail()))
                 .state(entity.getState().name())
-                .isRead(entity.getIsRead())
-                .category(entity.getCategory())
+                .category(entity.getCategory().toString())
                 .budgetNumber(entity.getBudgetNumber())
                 .budgets(toBudgetDataResponseList(entity.getBudgets()))
                 .build();
@@ -98,8 +94,8 @@ public class Converter {
     public static List<BudgetDataResponseDto> toBudgetDataResponseList(List<Budget> budgets) {
         return budgets.stream()
                 .map(b -> BudgetDataResponseDto.builder()
-                        .supplierId(b.getSupplierId())
-                        .supplierName(b.getSupplierName())
+                        .supplierId(b.getSupplierEntity().getId())
+                        .supplierName(b.getSupplierEntity().getName())
                         .price(b.getPrice() != null ? Double.valueOf(b.getPrice()) : null)
                         .daysCount(b.getDaysCount() != null ? b.getDaysCount() : 0)
                         .workerCount(b.getWorkerCount() != null ? b.getWorkerCount() : 0)
@@ -113,14 +109,13 @@ public class Converter {
     public static List<BudgetSupplierResponseDto> toBudgetSupplierResponseList(List<BudgetRequestEntity> entities, Long supplierId) {
         return entities.stream()
             .flatMap(request -> request.getBudgets().stream()
-                .filter(b -> b.getSupplierId().equals(supplierId))
+                .filter(b -> b.getSupplierEntity().getId().equals(supplierId))
                 .map(b -> BudgetSupplierResponseDto.builder()
                     .id(request.getId()) //ID de la solicitud
                     .budgetNumber(request.getBudgetNumber())
-                    .isRead(request.getIsRead())
-                    .applicantId(request.getApplicantId())
-                    .applicantName(request.getApplicantName())
-                    .category(request.getCategory())
+                    .applicantId(request.getApplicantEntity().getId())
+                    .applicantName(request.getApplicantEntity().getName())
+                    .category(request.getCategory().toString())
                     .budgetState(b.getState().name()) //Estado del presupuesto individual
                     .budgetRequestState(request.getState().name()) //Estado de la solicitud de presupuesto
                     .date(DateTimeUtils.toString(request.getCreatedAt()))
