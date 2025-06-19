@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,20 +24,27 @@ public class BudgetDAOImpl implements BudgetDAO {
         try {
             return repository.findAll();
         } catch (Exception e) {
+            log.error("Error al buscar todos los presupuestos: {}", e.getMessage());
             throw new InternalException(e.getMessage());
         }
     }
 
     @Override
-    public BudgetRequestEntity findById(String id) {
+    public BudgetRequestEntity findById(Long id) {
+        Optional<BudgetRequestEntity> entity;
+
         try {
-            return repository.findById(id)
-                    .orElseThrow(() -> new NotFoundException("Budget request not found"));
-        } catch (NotFoundException e) {
-            throw new NotFoundException(e.getDetail());
+            entity = repository.findById(id);
         } catch (Exception e) {
             throw new InternalException(e.getMessage());
         }
+
+        if (entity.isEmpty()) {
+            log.error("Budget id {} not found", id);
+            throw new NotFoundException("Presupuesto no encontrado con ID: " + id);
+        }
+
+        return entity.get();
     }
 
     @Override
@@ -44,15 +52,17 @@ public class BudgetDAOImpl implements BudgetDAO {
         try {
             return repository.save(entity);
         } catch (Exception e) {
+            log.error("Error al guardar presupuesto: {}", e.getMessage());
             throw new InternalException(e.getMessage());
         }
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(Long id) {
         try {
             repository.deleteById(id);
         } catch (Exception e) {
+            log.error("Error al eliminar presupuesto: {}", e.getMessage());
             throw new InternalException(e.getMessage());
         }
     }
@@ -61,7 +71,8 @@ public class BudgetDAOImpl implements BudgetDAO {
     public List<BudgetRequestEntity> findByApplicantId(Long applicantId) {
         try {
             return repository.findByApplicantId(applicantId);
-        }  catch (Exception e) {
+        } catch (Exception e) {
+            log.error("Error buscando presupuestos por solicitante: {}", e.getMessage());
             throw new InternalException(e.getMessage());
         }
     }
@@ -70,7 +81,8 @@ public class BudgetDAOImpl implements BudgetDAO {
     public List<BudgetRequestEntity> findBySupplierId(Long supplierId) {
         try {
             return repository.findBySupplierId(supplierId);
-        }  catch (Exception e) {
+        } catch (Exception e) {
+            log.error("Error buscando presupuestos por proveedor: {}", e.getMessage());
             throw new InternalException(e.getMessage());
         }
     }

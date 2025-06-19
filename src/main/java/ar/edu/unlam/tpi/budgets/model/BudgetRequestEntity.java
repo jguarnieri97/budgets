@@ -1,33 +1,62 @@
 package ar.edu.unlam.tpi.budgets.model;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Entity
+@Table(name = "BUDGET_REQUEST", schema = "BUDGETS")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Builder
-@Document(collection = "budgets")
 public class BudgetRequestEntity {
 
     @Id
-    private String id;
-    private String budgetNumber;
-    private Boolean isRead;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotNull(message = "El ID del solicitante no puede ser nulo")
-    private Long applicantId;
-    
-    private String applicantName;
+    @Column(name = "budget_number")
+    private String budgetNumber;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "applicant_id")
+    private ApplicantEntity applicantEntity;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    private String category;
+
+    @Setter
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    private CategoryType category;
+
+    @Setter
     private BudgetRequestState state;
+
+    @ElementCollection
+    @CollectionTable(name = "BUDGET_FILES", schema = "BUDGETS", joinColumns = @JoinColumn(name = "request_id"))
+    @Column(name = "file_data")
     private List<String> files;
+
+    @Embedded
     private BudgetDetail budgetDetail;
+
+    @OneToMany(mappedBy = "budgetRequestEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Budget> budgets;
 
+    public BudgetRequestEntity(String budgetNumber, ApplicantEntity applicantEntity, CategoryType category, List<String> files, BudgetDetail budgetDetail, List<Budget> budgets) {
+        this.budgetNumber = budgetNumber;
+        this.applicantEntity = applicantEntity;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.category = category;
+        this.state = BudgetRequestState.INITIATED;
+        this.files = files;
+        this.budgetDetail = budgetDetail;
+        this.budgets = budgets;
+    }
 }

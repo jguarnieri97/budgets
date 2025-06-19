@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: budgets
+  datasource:
+    url: ${DB_HOST:jdbc:sqlserver://localhost;database=nexwork-db;user=NxwAdmin;password=Nexwork123;trustServerCertificate=true}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+server:
+  port: 8085

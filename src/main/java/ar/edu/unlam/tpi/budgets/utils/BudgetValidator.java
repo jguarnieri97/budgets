@@ -19,12 +19,12 @@ public class BudgetValidator {
         }
 
         //verificar que el proveedor contratado sea un proveedor valido de la lista de proveedoresde esta solicitud
-        if (!budgetRequest.getBudgets().stream().anyMatch(budget -> budget.getSupplierId().equals(supplierHired))) {
+        if (budgetRequest.getBudgets().stream().noneMatch(budget -> budget.getSupplierEntity().getId().equals(supplierHired))) {
             throw new NotFoundException("El proveedor contratado no es un proveedor valido de esta solicitud");
         }
     
         budgetRequest.getBudgets().forEach(budget -> {
-            if (budget.getSupplierId().equals(supplierHired)) {
+            if (budget.getSupplierEntity().getId().equals(supplierHired)) {
                 budget.setHired(true);
                 budget.setState(BudgetState.ACCEPTED);
             } else {

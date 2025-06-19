@@ -12,6 +12,7 @@ import ar.edu.unlam.tpi.budgets.model.BudgetRequestState;
 import ar.edu.unlam.tpi.budgets.model.BudgetState;
 import ar.edu.unlam.tpi.budgets.persistence.dao.BudgetDAO;
 import ar.edu.unlam.tpi.budgets.service.BudgetService;
+import ar.edu.unlam.tpi.budgets.service.CodeNumberGenerator;
 import ar.edu.unlam.tpi.budgets.utils.BudgetCreationResponseBuilder;
 import ar.edu.unlam.tpi.budgets.utils.BudgetValidator;
 import ar.edu.unlam.tpi.budgets.utils.Converter;
@@ -31,13 +32,15 @@ public class BudgetServiceImpl implements BudgetService {
     private final BudgetDAO budgetDAO;
     private final BudgetCreationResponseBuilder budgetCreationResponseBuilder;
     private final BudgetValidator budgetValidator;
+    private final CodeNumberGenerator codeNumberGenerator;
 
     @Override
     public BudgetCreationResponseDto create(BudgetCreationRequestDto request) {
         log.info("Iniciando creación de presupuesto para solicitante ID {} - nombre: {}", request.getApplicantId(),
                 request.getApplicantName());
 
-        BudgetRequestEntity budgetRequest = Converter.toBudgetRequest(request);
+        String budgetNumber = codeNumberGenerator.generateCodeNumber();
+        BudgetRequestEntity budgetRequest = Converter.toBudgetRequest(request, budgetNumber);
         log.debug("Objeto BudgetRequest generado: {}", budgetRequest);
 
         BudgetRequestEntity saved = budgetDAO.save(budgetRequest);
@@ -67,21 +70,17 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public BudgetResponseDetailDto getBudgetDetailById(String budgetId) {
+    public BudgetResponseDetailDto getBudgetDetailById(Long budgetId) {
         log.info("Buscando detalle de presupuesto con ID {}", budgetId);
 
-        try {
-            BudgetRequestEntity entity = budgetDAO.findById(budgetId);
-            log.info("Detalle de presupuesto obtenido para ID {}", budgetId);
-            return Converter.toBudgetResponse(entity);
-        } catch (Exception ex) {
-            log.error("Error al obtener detalle del presupuesto con ID {}: {}", budgetId, ex.getMessage(), ex);
-            throw ex;
-        }
+        BudgetRequestEntity entity = budgetDAO.findById(budgetId);
+        log.info("Detalle de presupuesto obtenido para ID {}", budgetId);
+
+        return Converter.toBudgetResponse(entity);
     }
 
     @Override
-    public void finalizeBudgetRequest(String budgetId, BudgetFinalizeRequestDto request) {
+    public void finalizeBudgetRequest(Long budgetId, BudgetFinalizeRequestDto request) {
         BudgetRequestEntity entity = budgetDAO.findById(budgetId);
 
         log.info("Validando proveedor contratado");
@@ -92,18 +91,20 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public void finalizeRequestOnly(String id) {
+    public void finalizeRequestOnly(Long id) {
         BudgetRequestEntity entity = budgetDAO.findById(id);
         log.info("Finalizando presupuesto con ID {}", id);
+
         entity.setState(BudgetRequestState.FINALIZED);
-        log.info("Presupuesto finalizado con ID: {}", id);
+
         budgetDAO.save(entity);
+        log.info("Presupuesto finalizado con ID: {}", id);
     }
 
-    public void update(String id, Long providerId,  BudgetUpdateDataRequestDto request) {   
+    public void update(Long id, Long providerId,  BudgetUpdateDataRequestDto request) {
+        log.info("Actualizando presupuesto con ID {}", id);
 
         BudgetRequestEntity existingBudget = updateFieldsOfBudget(budgetDAO.findById(id), request, providerId);
-        log.info("Actualizando presupuesto con ID {}", id);
 
         budgetDAO.save(existingBudget);
         log.info("Presupuesto actualizado con ID: {}", existingBudget.getId());
@@ -112,7 +113,7 @@ public class BudgetServiceImpl implements BudgetService {
     private BudgetRequestEntity updateFieldsOfBudget(BudgetRequestEntity existingBudget, BudgetUpdateDataRequestDto request, Long providerId) {
     
         existingBudget.getBudgets().stream()
-            .filter(b -> b.getSupplierId().equals(providerId))
+            .filter(b -> b.getSupplierEntity().getId().equals(providerId))
             .findFirst()
             .ifPresentOrElse(budget -> {
                 budget.setState(BudgetState.ACCEPTED);
