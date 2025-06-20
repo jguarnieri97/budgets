@@ -59,4 +59,9 @@ public class BudgetControllerImpl implements BudgetController {
         return new GenericResponse<>(Constants.STATUS_OK, Constants.UPDATED_MESSAGE, null);
     }
 
+    @Override
+    public GenericResponse<Void> rejectBudgetRequest(Long budgetId, Long supplierId) {
+        budgetService.rejectBudgetRequest(budgetId, supplierId);
+        return new GenericResponse<>(Constants.STATUS_OK, Constants.UPDATED_MESSAGE, null);
+    }
 }

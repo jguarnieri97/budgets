@@ -8,5 +8,5 @@ public interface BudgetDAO extends GenericInterfaceDAO<BudgetRequestEntity, Long
 
     List<BudgetRequestEntity> findByApplicantId(Long applicantId);
     List<BudgetRequestEntity> findBySupplierId(Long supplierId);
-
+    BudgetRequestEntity findByIdAndSupplierId(Long id, Long supplierId);
 }
