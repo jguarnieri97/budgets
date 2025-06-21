@@ -45,4 +45,10 @@ public interface BudgetController {
         @Operation(summary = "Finalize budget request")
         GenericResponse<Void> finalizeRequestOnly(@PathVariable Long id);
 
+        @PutMapping("/{id}/user/{providerId}/reject")
+        @ResponseStatus(HttpStatus.OK)
+        @Operation(summary = "Reject budget request")
+        GenericResponse<Void> rejectBudgetRequest(@PathVariable("id") Long id,
+                                                  @PathVariable("providerId") Long providerId);
+
 }

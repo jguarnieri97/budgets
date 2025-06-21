@@ -87,5 +87,18 @@ public class BudgetDAOImpl implements BudgetDAO {
         }
     }
 
+    @Override
+    public BudgetRequestEntity findByIdAndSupplierId(Long id, Long supplierId) {
+        try {
+            return repository.findByIdAndSupplierId(id, supplierId).orElseThrow(() -> {;
+                log.error("Presupuesto con ID {} no encontrado para el proveedor con ID {}", id, supplierId);
+                return new NotFoundException("Presupuesto no encontrado con ID: " + id + " para el proveedor: " + supplierId);
+            });
+        } catch (Exception e) {
+            log.error("Error al buscar todos los presupuestos: {}", e.getMessage());
+            throw new InternalException(e.getMessage());
+        }
+    }
+
 
 }
