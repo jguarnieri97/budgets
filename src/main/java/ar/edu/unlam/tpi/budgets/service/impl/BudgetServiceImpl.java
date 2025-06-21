@@ -106,7 +106,9 @@ public class BudgetServiceImpl implements BudgetService {
         BudgetRequestEntity entity = budgetDAO.findByIdAndSupplierId(budgetId, supplierId);
         log.info("Rechazando presupuesto con ID {}", budgetId);
 
-        entity.setState(BudgetRequestState.REJECTED);
+        entity.getBudgets().stream()
+                .filter(budget -> budget.getSupplierEntity().getId().equals(supplierId))
+                .forEach(budget -> budget.setState(BudgetState.REJECTED));
 
         budgetDAO.save(entity);
         log.info("Presupuesto rechazado con ID: {}", budgetId);
