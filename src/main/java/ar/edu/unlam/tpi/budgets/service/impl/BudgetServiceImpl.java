@@ -101,6 +101,19 @@ public class BudgetServiceImpl implements BudgetService {
         log.info("Presupuesto finalizado con ID: {}", id);
     }
 
+    @Override
+    public void rejectBudgetRequest(Long budgetId, Long supplierId) {
+        BudgetRequestEntity entity = budgetDAO.findByIdAndSupplierId(budgetId, supplierId);
+        log.info("Rechazando presupuesto con ID {}", budgetId);
+
+        entity.getBudgets().stream()
+                .filter(budget -> budget.getSupplierEntity().getId().equals(supplierId))
+                .forEach(budget -> budget.setState(BudgetState.REJECTED));
+
+        budgetDAO.save(entity);
+        log.info("Presupuesto rechazado con ID: {}", budgetId);
+    }
+
     public void update(Long id, Long providerId,  BudgetUpdateDataRequestDto request) {
         log.info("Actualizando presupuesto con ID {}", id);
 
@@ -109,6 +122,8 @@ public class BudgetServiceImpl implements BudgetService {
         budgetDAO.save(existingBudget);
         log.info("Presupuesto actualizado con ID: {}", existingBudget.getId());
     }
+
+
 
     private BudgetRequestEntity updateFieldsOfBudget(BudgetRequestEntity existingBudget, BudgetUpdateDataRequestDto request, Long providerId) {
     

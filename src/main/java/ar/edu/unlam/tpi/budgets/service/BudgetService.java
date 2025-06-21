@@ -19,4 +19,5 @@ public interface BudgetService {
     void update(Long id, Long providerId,  BudgetUpdateDataRequestDto request);
     void finalizeBudgetRequest(Long budgetId, BudgetFinalizeRequestDto request);
     void finalizeRequestOnly(Long id);
+    void rejectBudgetRequest(Long id, Long supplierId);
 }
