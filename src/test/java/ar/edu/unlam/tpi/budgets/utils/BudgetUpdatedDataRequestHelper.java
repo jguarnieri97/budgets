@@ -8,7 +8,7 @@ public class BudgetUpdatedDataRequestHelper {
         return BudgetUpdateDataRequestDto.builder()
             .price(150000f)
             .daysCount(3)
-            .workerCount(2)
+            .workerCount(1)
             .detail("Actualización de presupuesto")
             .build();
     }

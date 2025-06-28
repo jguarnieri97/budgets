@@ -24,10 +24,10 @@ public interface UserController {
     GenericResponse<List<BudgetResponseDto>> getBudgetsByApplicantId(
             @PathVariable("applicantId") @NotNull Long applicantId);
 
-            @GetMapping("/supplier/{supplierId}")
-            @ResponseStatus(HttpStatus.OK)
-            @Operation(summary = "Get applicant's budget requests")
-            GenericResponse<List<BudgetSupplierResponseDto>> getBudgetsBySupplierId(
-                    @PathVariable("supplierId") @NotNull Long supplierId);
+    @GetMapping("/supplier/{supplierId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get applicant's budget requests")
+    GenericResponse<List<BudgetSupplierResponseDto>> getBudgetsBySupplierId(
+            @PathVariable("supplierId") @NotNull Long supplierId);
         
 }

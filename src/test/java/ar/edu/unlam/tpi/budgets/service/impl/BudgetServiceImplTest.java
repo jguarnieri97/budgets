@@ -199,19 +199,19 @@ public class BudgetServiceImplTest {
 
 
     @Test
-void givenValidId_whenFinalizeRequestOnly_thenStateIsUpdatedToFinalized() {
-    // Given
-    BudgetRequestEntity entity = BudgetRequestEntity.builder().id(BUDGET_ID).state(BudgetRequestState.FINALIZED).build();
+    void givenValidId_whenFinalizeRequestOnly_thenStateIsUpdatedToFinalized() {
+        // Given
+        BudgetRequestEntity entity = BudgetRequestEntity.builder().id(BUDGET_ID).state(BudgetRequestState.FINALIZED).build();
 
-    when(budgetDAO.findById(BUDGET_ID)).thenReturn(entity);
+        when(budgetDAO.findById(BUDGET_ID)).thenReturn(entity);
 
-    // When
-    budgetService.finalizeRequestOnly(BUDGET_ID);
+        // When
+        budgetService.finalizeRequestOnly(BUDGET_ID);
 
-    // Then
-    assertEquals(BudgetRequestState.FINALIZED, entity.getState());
-    verify(budgetDAO).findById(BUDGET_ID);
-    verify(budgetDAO).save(entity);
-}
+        // Then
+        assertEquals(BudgetRequestState.FINALIZED, entity.getState());
+        verify(budgetDAO).findById(BUDGET_ID);
+        verify(budgetDAO).save(entity);
+    }
 
 }

@@ -147,5 +147,50 @@ public class BudgetDAOImplTest {
         // Then
         assertEquals(expected, result);
     }
+    @Test
+    void givenRepositoryThrowsException_whenFindBySupplierId_thenThrowsInternalException() {
+        // given
+        Long supplierId = 123L;
+        when(repository.findBySupplierId(supplierId)).thenThrow(new InternalException("DB error"));
 
+        // when
+        InternalException ex = assertThrows(InternalException.class, () ->
+                repository.findBySupplierId(supplierId));
+
+        // then
+        assertEquals("INTERNAL_SERVER_ERROR", ex.getMessage());
+        verify(repository).findBySupplierId(supplierId);
+    }
+
+    @Test
+    void givenRepositoryThrowsException_whenFindByIdAndSupplierId_thenThrowsInternalException() {
+        // given
+        Long id = 1L;
+        Long supplierId = 2L;
+        when(repository.findByIdAndSupplierId(id, supplierId)).thenThrow(new InternalException("DB failure"));
+
+        // when
+        InternalException ex = assertThrows(InternalException.class, () ->
+                repository.findByIdAndSupplierId(id, supplierId));
+
+        // then
+        assertEquals("INTERNAL_SERVER_ERROR", ex.getMessage());
+        verify(repository).findByIdAndSupplierId(id, supplierId);
+    }
+
+    @Test
+    void givenEmptyOptional_whenFindByIdAndSupplierId_thenThrowsNotFoundException() {
+        // given
+        Long id = 1L;
+        Long supplierId = 2L;
+        when(repository.findByIdAndSupplierId(id, supplierId)).thenThrow(new NotFoundException("No encontrado"));
+
+        // when
+        NotFoundException ex = assertThrows(NotFoundException.class, () ->
+                repository.findByIdAndSupplierId(id, supplierId));
+
+        // then
+        assertEquals("NOT_FOUND_EXCEPTION", ex.getMessage());
+        verify(repository).findByIdAndSupplierId(id, supplierId);
+    }
 }
