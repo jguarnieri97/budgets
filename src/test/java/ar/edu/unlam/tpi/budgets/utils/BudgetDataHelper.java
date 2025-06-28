@@ -35,6 +35,21 @@ public class BudgetDataHelper {
                 .build();
     }
 
+    public static BudgetCreationRequestDto createValidRequest() {
+        return BudgetCreationRequestDto.builder()
+                .applicantId(1L)
+                .applicantName("Solicitante Test")
+                .category(CategoryType.CONTRACTOR.toString())
+                .workResume("Trabajo test")
+                .workDetail("Detalle test")
+                .files(List.of("file1", "file2"))
+                .suppliers(List.of(
+                        supplier(1L, "Proveedor A"),
+                        supplier(2L, "Proveedor B")
+                ))
+                .build();
+    }
+
     public static BudgetCreationRequestDto createInvalidRequest() {
         return BudgetCreationRequestDto.builder()
                 .applicantId(null)
