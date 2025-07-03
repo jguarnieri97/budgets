@@ -16,7 +16,7 @@ public class CodeNumberGeneratorImpl implements CodeNumberGenerator {
         String sql = "SELECT NEXT VALUE FOR budget_sequence";
         Long nextValue = jdbcTemplate.queryForObject(sql, Long.class);
         if (nextValue == null) {
-            throw new RuntimeException("No se pudo obtener el siguiente valor de la secuencia");
+            throw new InternalError("No se pudo obtener el siguiente valor de la secuencia");
         }
         return String.format("%05d", nextValue);
     }

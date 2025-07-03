@@ -11,6 +11,7 @@ import ar.edu.unlam.tpi.budgets.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class BudgetDataHelper {
@@ -30,7 +31,7 @@ public class BudgetDataHelper {
                 .category(CategoryType.CONTRACTOR.toString())
                 .workResume("Trabajo test")
                 .workDetail("Detalle test")
-                .files(List.of("file1", "file2"))
+                .files(List.of())
                 .suppliers(suppliers)
                 .build();
     }
@@ -42,7 +43,7 @@ public class BudgetDataHelper {
                 .category(CategoryType.CONTRACTOR.toString())
                 .workResume("Trabajo test")
                 .workDetail("Detalle test")
-                .files(List.of("file1", "file2"))
+                .files(List.of())
                 .suppliers(List.of(
                         supplier(1L, "Proveedor A"),
                         supplier(2L, "Proveedor B")
@@ -102,7 +103,7 @@ public class BudgetDataHelper {
                         .detail("Tendido de cableado y tablero")
                         .state(BudgetState.PENDING)
                         .build()))
-                .files(List.of("file1.pdf", "file2.docx"))
+                .files(List.of())
                 .build();
     }
 
@@ -130,7 +131,7 @@ public class BudgetDataHelper {
     }
 
     public static List<Budget> getOnlyBudget() {
-        return new ArrayList<>(Arrays.asList(
+        return new ArrayList<>(Collections.singletonList(
                 Budget.builder()
                         .supplierEntity(SupplierEntity.builder()
                                 .id(1L)
