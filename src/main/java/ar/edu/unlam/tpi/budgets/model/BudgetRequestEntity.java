@@ -40,7 +40,7 @@ public class BudgetRequestEntity {
     @ElementCollection
     @CollectionTable(name = "BUDGET_FILES", schema = "BUDGETS", joinColumns = @JoinColumn(name = "request_id"))
     @Column(name = "file_data")
-    private List<String> files;
+    private List<byte[]> files;
 
     @Embedded
     private BudgetDetail budgetDetail;
@@ -48,7 +48,7 @@ public class BudgetRequestEntity {
     @OneToMany(mappedBy = "budgetRequestEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Budget> budgets;
 
-    public BudgetRequestEntity(String budgetNumber, ApplicantEntity applicantEntity, CategoryType category, List<String> files, BudgetDetail budgetDetail, List<Budget> budgets) {
+    public BudgetRequestEntity(String budgetNumber, ApplicantEntity applicantEntity, CategoryType category, List<byte[]> files, BudgetDetail budgetDetail, List<Budget> budgets) {
         this.budgetNumber = budgetNumber;
         this.applicantEntity = applicantEntity;
         this.createdAt = LocalDateTime.now();

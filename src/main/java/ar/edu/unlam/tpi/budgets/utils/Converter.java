@@ -6,6 +6,7 @@ import ar.edu.unlam.tpi.budgets.dto.response.*;
 import ar.edu.unlam.tpi.budgets.model.*;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +30,23 @@ public class Converter {
                 .build();
 
         var entity = new BudgetRequestEntity(budgetNumber, applicant,
-                CategoryType.valueOf(request.getCategory()), request.getFiles(), detail, budgets);
+                CategoryType.valueOf(request.getCategory()), decodeBase64List(request.getFiles()), detail, budgets);
 
         budgets.forEach(budget -> budget.setBudgetRequestEntity(entity));
 
         return entity;
+    }
+
+    private static List<byte[]> decodeBase64List(List<String> files) {
+        return files.stream()
+                .map(file -> Base64.getDecoder().decode(file))
+                .collect(Collectors.toList());
+    }
+
+    private static List<String> encodeBase64List(List<byte[]> files) {
+        return files.stream()
+                .map(file -> Base64.getEncoder().encodeToString(file))
+                .collect(Collectors.toList());
     }
 
    private static Budget buildBudget(SupplierDataRequest request) {
@@ -75,7 +88,7 @@ public class Converter {
                 .applicantId(entity.getApplicantEntity().getId())
                 .applicantName(entity.getApplicantEntity().getName())
                 .createdAt(DateTimeUtils.toString(entity.getCreatedAt()))
-                .files(entity.getFiles())
+                .files(encodeBase64List(entity.getFiles()))
                 .detail(toBudgetDetailResponse(entity.getBudgetDetail()))
                 .state(entity.getState().name())
                 .category(entity.getCategory().toString())
